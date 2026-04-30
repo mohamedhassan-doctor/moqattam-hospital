@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مستشفى المقطم التخصصي - احجز موعدك الآن</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <div class="nav-logo">م</div>
+      <div class="nav-brand-text">
+        <h1>مستشفى المقطم التخصصي</h1>
+        <span>حجز المواعيد الإلكتروني</span>
+      </div>
+    </a>
+    <button class="nav-toggle" onclick="toggleNav()" aria-label="القائمة">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" class="active">الرئيسية</a>
+      <a href="clinics.html">العيادات</a>
+      <a href="booking.html">احجز موعد</a>
+      <a href="admin.html" class="nav-btn">لوحة التحكم</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🏥 مستشفى المقطم التخصصي</div>
+    <h2>احجز موعدك مع أفضل الأطباء بسهولة وسرعة</h2>
+    <p>خدمات طبية متكاملة بأعلى معايير الجودة. احجز موعدك الآن وادفع بأمان عبر الإنترنت</p>
+    <div class="hero-search">
+      <input type="text" id="heroSearch" placeholder="ابحث عن عيادة أو طبيب..." oninput="heroSearchHandler()">
+      <button onclick="goToSearch()">ابحث</button>
+    </div>
+    <div class="hero-actions">
+      <a href="clinics.html" class="btn btn-primary btn-lg">🏥 استعرض العيادات</a>
+      <a href="booking.html" class="btn btn-outline btn-lg">📅 احجز موعد</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-bar">
+  <div class="stats-inner" id="statsBar"></div>
+</section>
+
+<!-- FEATURED CLINICS -->
+<section class="section" style="background: var(--bg);">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">🏥 عياداتنا</div>
+      <h2>العيادات المتخصصة</h2>
+      <p>نقدم رعاية طبية شاملة في مختلف التخصصات مع أفضل الكوادر الطبية</p>
+    </div>
+    <div class="clinics-grid" id="featuredClinics"></div>
+    <div style="text-align:center; margin-top:36px;">
+      <a href="clinics.html" class="btn btn-outline-primary btn-lg">عرض جميع العيادات ←</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="background: white;">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">⚡ كيف تحجز</div>
+      <h2>احجز في 3 خطوات بسيطة</h2>
+      <p>عملية حجز سهلة وسريعة توفر وقتك وجهدك</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">١</div>
+        <h3>اختر العيادة والطبيب</h3>
+        <p>تصفح عياداتنا المتخصصة واختر الطبيب المناسب لحالتك</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">٢</div>
+        <h3>حدد الموعد المناسب</h3>
+        <p>اختر التاريخ والوقت المناسب لك من المواعيد المتاحة</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">٣</div>
+        <h3>ادفع واستلم تأكيدك</h3>
+        <p>ادفع بأمان عبر بطاقتك الائتمانية واحصل على رقم الحجز فوراً</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section" style="background: var(--bg);">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">⭐ لماذا نحن</div>
+      <h2>لماذا مستشفى المقطم التخصصي؟</h2>
+    </div>
+    <div class="clinics-grid" id="whyCards"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">
+          <div class="logo-icon">م</div>
+          <div>
+            <strong style="color:white;font-size:0.95rem;">مستشفى المقطم التخصصي</strong><br>
+            <span style="font-size:0.75rem;">رعاية صحية متميزة</span>
+          </div>
+        </div>
+        <p>نقدم خدمات طبية متكاملة بأعلى معايير الجودة والرعاية الصحية. فريق طبي متخصص يعمل على مدار الساعة لخدمتكم.</p>
+      </div>
+      <div class="footer-col">
+        <h4>روابط سريعة</h4>
+        <a href="index.html">الرئيسية</a>
+        <a href="clinics.html">العيادات</a>
+        <a href="booking.html">احجز موعد</a>
+      </div>
+      <div class="footer-col">
+        <h4>العيادات</h4>
+        <a href="clinics.html">عيادة القلب</a>
+        <a href="clinics.html">عيادة العظام</a>
+        <a href="clinics.html">عيادة الأطفال</a>
+        <a href="clinics.html">كل العيادات</a>
+      </div>
+      <div class="footer-col">
+        <h4>تواصل معنا</h4>
+        <a href="#">📍 المقطم، القاهرة</a>
+        <a href="#">📞 16000</a>
+        <a href="#">📧 info@moqattam-hospital.com</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 مستشفى المقطم التخصصي. جميع الحقوق محفوظة.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+<script>
+  function toggleNav() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+
+  function heroSearchHandler() {
+    const q = document.getElementById('heroSearch').value;
+    sessionStorage.setItem('clinicSearch', q);
+  }
+
+  function goToSearch() {
+    const q = document.getElementById('heroSearch').value;
+    sessionStorage.setItem('clinicSearch', q);
+    window.location.href = 'clinics.html';
+  }
+
+  function renderStats() {
+    const clinics = getClinics().filter(c => c.active);
+    const doctors = getDoctors().filter(d => d.active);
+    const slots = getSlots().filter(s => s.active);
+    const bookings = getBookings();
+    const stats = [
+      { num: clinics.length + '+', label: 'عيادة متخصصة' },
+      { num: doctors.length + '+', label: 'طبيب وأخصائي' },
+      { num: slots.length + '+', label: 'موعد متاح' },
+      { num: bookings.length + '+', label: 'حجز مكتمل' }
+    ];
+    document.getElementById('statsBar').innerHTML = stats.map(s => `
+      <div class="stat-item">
+        <div class="stat-num">${s.num}</div>
+        <div class="stat-label">${s.label}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderFeaturedClinics() {
+    const clinics = getClinics().filter(c => c.active).slice(0, 6);
+    document.getElementById('featuredClinics').innerHTML = clinics.map(c => {
+      const doctors = getDoctorsByClinic(c.id);
+      return `
+        <div class="clinic-card" onclick="window.location.href='booking.html?clinicId=${c.id}'">
+          <div class="clinic-card-top">
+            <div class="clinic-icon" style="background:${c.color}22;">${c.icon}</div>
+            <div class="clinic-card-info">
+              <h3>${c.name}</h3>
+              <p>${c.description}</p>
+              <div class="clinic-doctors-count" style="margin-top:8px;">👨‍⚕️ ${doctors.length} طبيب متخصص</div>
+            </div>
+          </div>
+          <div class="clinic-card-bottom">
+            <div class="clinic-price">
+              <strong>${c.price}</strong>
+              <span> جنيه</span><br>
+              <span style="font-size:0.72rem;color:var(--text-muted);">سعر الكشف</span>
+            </div>
+            <button class="btn-book" onclick="event.stopPropagation();window.location.href='booking.html?clinicId=${c.id}'">احجز الآن</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderWhyCards() {
+    const cards = [
+      { icon: '🏆', title: 'كوادر طبية متميزة', text: 'نخبة من الأطباء المتخصصين بخبرات تتجاوز 15 عاماً في مجالاتهم' },
+      { icon: '🔬', title: 'أحدث التقنيات الطبية', text: 'مجهزون بأحدث الأجهزة والتقنيات الطبية للتشخيص الدقيق والعلاج الفعال' },
+      { icon: '💳', title: 'دفع آمن وسريع', text: 'نظام دفع إلكتروني آمن بالبطاقات الائتمانية مع تأكيد فوري للحجز' },
+    ];
+    document.getElementById('whyCards').innerHTML = cards.map(c => `
+      <div class="clinic-card" style="cursor:default;">
+        <div class="clinic-card-top">
+          <div class="clinic-icon" style="background:var(--primary-light);font-size:2rem;">${c.icon}</div>
+          <div class="clinic-card-info">
+            <h3>${c.title}</h3>
+            <p style="margin-top:4px;">${c.text}</p>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  renderStats();
+  renderFeaturedClinics();
+  renderWhyCards();
+</script>
+</body>
+</html>

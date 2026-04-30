@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم - مستشفى المقطم التخصصي</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-page { display: none; }
+    .login-page { display: flex; }
+    .section-panel { display: none; }
+    .section-panel.active { display: block; }
+    .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+    .color-picker-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+    .color-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s; }
+    .color-dot.selected { border-color: var(--text); transform: scale(1.15); }
+    .status-select { padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-family: 'Cairo',sans-serif; font-size: 0.82rem; background: white; }
+    .sidebar-mobile-toggle { display: none; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: var(--radius-sm); font-family: 'Cairo',sans-serif; font-weight: 700; cursor: pointer; }
+    @media (max-width: 768px) { .admin-sidebar { display: none; } .admin-sidebar.open { display: flex; } .sidebar-mobile-toggle { display: block; } }
+    .booking-filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filter-chip { padding: 6px 16px; border-radius: 50px; border: 1.5px solid var(--border); font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: 'Cairo',sans-serif; background: white; color: var(--text-muted); transition: all 0.2s; }
+    .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .copay-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 50px; font-size: 0.78rem; font-weight: 800; background: var(--primary-light); color: var(--primary); }
+    .ins-icon { font-size: 1.3rem; }
+    th { white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<div class="login-page admin-login-page" id="loginPage">
+  <div class="admin-login-card">
+    <div class="admin-login-logo">
+      <div class="logo-icon">🏥</div>
+      <h2>مستشفى المقطم التخصصي</h2>
+      <p>لوحة تحكم المسؤول</p>
+    </div>
+    <div id="loginError" class="alert alert-danger" style="display:none;">❌ بيانات الدخول غير صحيحة</div>
+    <div class="form-group">
+      <label class="form-label">اسم المستخدم</label>
+      <input type="text" class="form-control" id="loginUser" placeholder="admin" value="admin">
+    </div>
+    <div class="form-group">
+      <label class="form-label">كلمة المرور</label>
+      <input type="password" class="form-control" id="loginPass" placeholder="••••••••" value="admin123" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn btn-primary btn-block btn-lg" onclick="doLogin()" style="margin-top:8px;">🔐 دخول</button>
+    <p style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-top:16px;">بيانات التجربة: admin / admin123</p>
+  </div>
+</div>
+
+<!-- ===================== ADMIN PANEL ===================== -->
+<div class="admin-page" id="adminPage">
+  <div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🏥</div>
+        <div class="sidebar-brand-text"><h3>مستشفى المقطم</h3><span>لوحة التحكم</span></div>
+      </div>
+      <nav class="sidebar-nav" id="sidebarNav">
+        <a href="#" onclick="showSection('dashboard')"  id="nav-dashboard"  class="active"><span class="nav-icon">📊</span> لوحة التحكم</a>
+        <a href="#" onclick="showSection('clinics')"    id="nav-clinics"   ><span class="nav-icon">🏥</span> إدارة العيادات</a>
+        <a href="#" onclick="showSection('doctors')"    id="nav-doctors"   ><span class="nav-icon">👨‍⚕️</span> إدارة الأطباء</a>
+        <a href="#" onclick="showSection('slots')"      id="nav-slots"     ><span class="nav-icon">📅</span> إدارة المواعيد</a>
+        <a href="#" onclick="showSection('bookings')"   id="nav-bookings"  ><span class="nav-icon">📋</span> الحجوزات</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn btn-danger btn-sm btn-block" onclick="doLogout()">🚪 تسجيل الخروج</button>
+        <a href="index.html" style="display:block;text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.6);margin-top:10px;">← العودة للموقع</a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="sidebar-mobile-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('open')">☰</button>
+          <h2 id="pageTitle">لوحة التحكم</h2>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:0.82rem;color:var(--text-muted);">👤 مسؤول النظام</span>
+          <a href="index.html" class="btn btn-outline-primary btn-sm">← الموقع</a>
+        </div>
+      </div>
+
+      <div class="admin-content">
+
+        <!-- ===== DASHBOARD ===== -->
+        <div class="section-panel active" id="panel-dashboard">
+          <div class="stat-cards" id="dashStats"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" id="dashGrids">
+            <div class="card">
+              <div class="card-header"><h3>📋 آخر الحجوزات</h3></div>
+              <div class="card-body" id="recentBookings" style="padding:0;"></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>📊 توزيع حالات الحجز</h3></div>
+              <div class="card-body" id="bookingStatusStats" style="padding:16px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== CLINICS ===== -->
+        <div class="section-panel" id="panel-clinics">
+          <div class="action-bar">
+            <input type="text" placeholder="🔍 ابحث عن عيادة..." oninput="renderClinicsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:320px;">
+            <button class="btn btn-primary" onclick="openClinicModal()">+ إضافة عيادة</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>العيادة</th><th>السعر</th><th>الأطباء</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                <tbody id="clinicsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== DOCTORS ===== -->
+        <div class="section-panel" id="panel-doctors">
+          <div class="action-bar">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;flex:1;">
+              <input type="text" placeholder="🔍 ابحث عن طبيب..." oninput="renderDoctorsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;">
+              <select id="doctorClinicFilter" onchange="renderDoctorsTable()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;"><option value="">كل العيادات</option></select>
+            </div>
+            <button class="btn btn-primary" onclick="openDoctorModal()">+ إضافة طبيب</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>الطبيب</th><th>التخصص</th><th>العيادة</th><th>الخبرة</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                <tbody id="doctorsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SLOTS ===== -->
+        <div class="section-panel" id="panel-slots">
+          <div class="action-bar">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;flex:1;">
+              <select id="slotClinicFilter" onchange="onSlotClinicChange()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;"><option value="">كل العيادات</option></select>
+              <select id="slotDoctorFilter" onchange="renderSlotsTable()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;"><option value="">كل الأطباء</option></select>
+            </div>
+            <button class="btn btn-primary" onclick="openSlotModal()">+ إضافة موعد</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>التاريخ</th><th>اليوم</th><th>الوقت</th><th>الطبيب</th><th>العيادة</th><th>المحجوز/الكلي</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                <tbody id="slotsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== BOOKINGS ===== -->
+        <div class="section-panel" id="panel-bookings">
+          <div class="booking-filters" id="bookingFilters"></div>
+          <div class="action-bar">
+            <input type="text" placeholder="🔍 ابحث باسم المريض أو رقم الحجز أو الهاتف..." oninput="renderBookingsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;min-width:200px;">
+            <button class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);white-space:nowrap;" onclick="exportBookings()">📥 تصدير CSV</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>رقم الحجز</th>
+                    <th>المريض</th>
+                    <th>العيادة / الطبيب</th>
+                    <th>التاريخ والوقت</th>
+                    <th>سعر الكشف</th>
+                    <th>حالة الحجز</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="bookingsBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="alert alert-info" style="margin-top:16px;">
+            💵 <strong>الدفع عند الاستقبال:</strong> يتم تحصيل رسوم الكشف من المرضى عند حضورهم للعيادة.
+          </div>
+        </div>
+
+      </div><!-- /admin-content -->
+    </main>
+  </div>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+
+<!-- Clinic Modal -->
+<div class="modal-overlay" id="clinicModal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="clinicModalTitle">إضافة عيادة</h3><button class="modal-close" onclick="closeModal('clinicModal')">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="clinicId">
+      <div class="form-group"><label class="form-label">اسم العيادة <span>*</span></label><input type="text" class="form-control" id="clinicName" placeholder="مثال: عيادة القلب"></div>
+      <div class="form-group"><label class="form-label">الوصف</label><textarea class="form-control" id="clinicDesc" rows="2" placeholder="وصف مختصر للعيادة"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">سعر الكشف (جنيه) <span>*</span></label><input type="number" class="form-control" id="clinicPrice" placeholder="200" min="0"></div>
+        <div class="form-group"><label class="form-label">الأيقونة (Emoji)</label><input type="text" class="form-control" id="clinicIcon" placeholder="🏥" maxlength="2"></div>
+      </div>
+      <div class="form-group"><label class="form-label">لون العيادة</label><div class="color-picker-wrap" id="colorPicker"></div><input type="hidden" id="clinicColor" value="#3498db"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('clinicModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveClinic()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Doctor Modal -->
+<div class="modal-overlay" id="doctorModal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="doctorModalTitle">إضافة طبيب</h3><button class="modal-close" onclick="closeModal('doctorModal')">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="doctorId">
+      <div class="form-group"><label class="form-label">اسم الطبيب <span>*</span></label><input type="text" class="form-control" id="doctorName" placeholder="د. محمد أحمد"></div>
+      <div class="form-group"><label class="form-label">اللقب / التخصص <span>*</span></label><input type="text" class="form-control" id="doctorTitle" placeholder="استشاري أمراض القلب"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">العيادة <span>*</span></label><select class="form-control" id="doctorClinicId"></select></div>
+        <div class="form-group"><label class="form-label">سنوات الخبرة</label><input type="text" class="form-control" id="doctorExp" placeholder="10 سنوات خبرة"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('doctorModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveDoctor()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Slot Modal -->
+<div class="modal-overlay" id="slotModal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="slotModalTitle">إضافة موعد</h3><button class="modal-close" onclick="closeModal('slotModal')">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="slotId">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">العيادة <span>*</span></label><select class="form-control" id="slotClinicId" onchange="populateSlotDoctors()"></select></div>
+        <div class="form-group"><label class="form-label">الطبيب <span>*</span></label><select class="form-control" id="slotDoctorId"></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">التاريخ <span>*</span></label><input type="date" class="form-control" id="slotDate"></div>
+        <div class="form-group"><label class="form-label">الوقت <span>*</span></label>
+          <select class="form-control" id="slotTime">
+            <option>09:00 ص</option><option>10:00 ص</option><option>11:00 ص</option>
+            <option>12:00 م</option><option>01:00 م</option><option>04:00 م</option>
+            <option>05:00 م</option><option>06:00 م</option><option>07:00 م</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">الحد الأقصى للمرضى</label><input type="number" class="form-control" id="slotMax" value="5" min="1" max="30"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('slotModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveSlot()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header"><h3>⚠️ تأكيد الحذف</h3><button class="modal-close" onclick="closeModal('deleteModal')">×</button></div>
+    <div class="modal-body"><p id="deleteMsg" style="font-size:0.95rem;line-height:1.6;"></p></div>
+    <div class="modal-footer">
+      <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('deleteModal')">إلغاء</button>
+      <button class="btn btn-danger" id="deleteConfirmBtn">🗑️ حذف</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+const COLORS = ['#e74c3c','#3498db','#2ecc71','#9b59b6','#f39c12','#1abc9c','#e67e22','#16a085','#8e44ad','#2980b9'];
+let bookingStatusFilter = 'all';
+let pendingDelete = null;
+
+// ===================== AUTH =====================
+function doLogin() {
+  const u = document.getElementById('loginUser').value;
+  const p = document.getElementById('loginPass').value;
+  if (adminLogin(u, p)) {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('adminPage').style.display = 'block';
+    initAdmin();
+  } else {
+    document.getElementById('loginError').style.display = 'flex';
+  }
+}
+function doLogout() { adminLogout(); document.getElementById('adminPage').style.display = 'none'; document.getElementById('loginPage').style.display = 'flex'; }
+function checkAuth() { if (isAdminLoggedIn()) { document.getElementById('loginPage').style.display = 'none'; document.getElementById('adminPage').style.display = 'block'; initAdmin(); } }
+
+// ===================== INIT =====================
+function initAdmin() {
+  renderDashboard();
+  renderClinicsTable();
+  renderDoctorsTable();
+  populateAllFilters();
+  renderSlotsTable();
+  renderBookingsTable();
+  renderBookingFilters();
+}
+
+function showSection(name) {
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  const titles = { dashboard:'لوحة التحكم', clinics:'إدارة العيادات', doctors:'إدارة الأطباء', slots:'إدارة المواعيد', bookings:'الحجوزات' };
+  document.getElementById('pageTitle').textContent = titles[name] || name;
+  if (name === 'doctors')   { populateDoctorClinicFilter(); renderDoctorsTable(); }
+  if (name === 'slots')     { populateSlotFilters(); renderSlotsTable(); }
+  if (name === 'dashboard') renderDashboard();
+  return false;
+}
+
+// ===================== DASHBOARD =====================
+function renderDashboard() {
+  const clinics  = getClinics().filter(c => c.active);
+  const doctors  = getDoctors().filter(d => d.active);
+  const bookings = getBookings();
+  const pending  = bookings.filter(b => b.status === 'pending').length;
+
+  const stats = [
+    { icon:'🏥', num:clinics.length,  label:'عيادة نشطة',       bg:'#e3f0ff', color:'#1565c0' },
+    { icon:'👨‍⚕️', num:doctors.length,  label:'طبيب متخصص',       bg:'#e0f2f1', color:'#00897b' },
+    { icon:'📋', num:bookings.length, label:'إجمالي الحجوزات',  bg:'#fff3e0', color:'#e65100' },
+    { icon:'⏳', num:pending,         label:'قيد الانتظار',      bg:'#fff8e1', color:'#f9a825' },
+  ];
+  document.getElementById('dashStats').innerHTML = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-card-icon" style="background:${s.bg};color:${s.color};">${s.icon}</div>
+      <div><div class="stat-card-num">${s.num}</div><div class="stat-card-label">${s.label}</div></div>
+    </div>`).join('');
+
+  const recent = [...bookings].reverse().slice(0, 5);
+  document.getElementById('recentBookings').innerHTML = recent.length === 0
+    ? '<p style="padding:20px;text-align:center;color:var(--text-muted);">لا توجد حجوزات بعد</p>'
+    : '<table style="width:100%"><thead><tr><th>رقم الحجز</th><th>المريض</th><th>العيادة</th><th>الحالة</th></tr></thead><tbody>'
+      + recent.map(b => {
+          const st = getStatusBadge(b.status);
+          return `<tr><td><strong>${b.id}</strong></td><td style="font-size:0.82rem;">${b.patientName}</td><td style="font-size:0.82rem;">${b.clinicName||''}</td><td><span class="badge ${st.cls}">${st.label}</span></td></tr>`;
+        }).join('') + '</tbody></table>';
+
+  // Booking status breakdown
+  const statusCounts = { pending:0, confirmed:0, cancelled:0, completed:0 };
+  bookings.forEach(b => { const k = b.status || 'pending'; if (statusCounts[k] !== undefined) statusCounts[k]++; });
+  const statusLabels = { pending:'⏳ قيد الانتظار', confirmed:'✅ مؤكد', cancelled:'❌ ملغي', completed:'🏁 مكتمل' };
+  const total = bookings.length || 1;
+  document.getElementById('bookingStatusStats').innerHTML = Object.entries(statusCounts).map(([k,v]) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:0.88rem;font-weight:600;">${statusLabels[k]}</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="height:6px;width:${Math.max(Math.round(v/total*120),4)}px;background:var(--primary);border-radius:3px;"></div>
+        <span class="badge badge-primary">${v} حجز</span>
+      </div>
+    </div>`).join('');
+}
+
+// ===================== CLINICS =====================
+function renderClinicsTable(search = '') {
+  const clinics = getClinics().filter(c => !search || c.name.includes(search));
+  document.getElementById('clinicsBody').innerHTML = clinics.length === 0
+    ? '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد عيادات</td></tr>'
+    : clinics.map(c => {
+        const docs = getDoctors().filter(d => d.clinicId === c.id).length;
+        return `<tr>
+          <td><div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;border-radius:8px;background:${c.color}22;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">${c.icon||'🏥'}</div>
+            <div><strong style="font-size:0.9rem;">${c.name}</strong><br><span style="font-size:0.75rem;color:var(--text-muted);">${c.description||''}</span></div>
+          </div></td>
+          <td><strong style="color:var(--primary);">${c.price}</strong> ج</td>
+          <td><span class="badge badge-primary">${docs} طبيب</span></td>
+          <td><span class="badge ${c.active?'badge-success':'badge-danger'}">${c.active?'نشطة':'معطلة'}</span></td>
+          <td><div style="display:flex;gap:6px;">
+            <button class="btn btn-sm btn-outline-primary" onclick="editClinic('${c.id}')">✏️ تعديل</button>
+            <button class="btn btn-sm btn-danger" onclick="confirmDelete('clinic','${c.id}','${c.name}')">🗑️</button>
+          </div></td>
+        </tr>`;
+      }).join('');
+}
+function openClinicModal(id=null) {
+  document.getElementById('clinicModalTitle').textContent = id ? 'تعديل العيادة' : 'إضافة عيادة جديدة';
+  document.getElementById('clinicId').value = id||'';
+  ['clinicName','clinicDesc','clinicIcon'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('clinicPrice').value='';
+  document.getElementById('clinicColor').value='#3498db';
+  renderColorPicker('#3498db');
+  if (id) { const c=getClinic(id); if(c){document.getElementById('clinicName').value=c.name;document.getElementById('clinicDesc').value=c.description||'';document.getElementById('clinicPrice').value=c.price;document.getElementById('clinicIcon').value=c.icon||'';document.getElementById('clinicColor').value=c.color||'#3498db';renderColorPicker(c.color);} }
+  openModal('clinicModal');
+}
+function editClinic(id) { openClinicModal(id); }
+function renderColorPicker(selected) {
+  document.getElementById('colorPicker').innerHTML = COLORS.map(c=>`<div class="color-dot ${c===selected?'selected':''}" style="background:${c};" onclick="selectColor('${c}')"></div>`).join('');
+}
+function selectColor(c) { document.getElementById('clinicColor').value=c; renderColorPicker(c); }
+function saveClinic() {
+  const name=document.getElementById('clinicName').value.trim();
+  const price=parseFloat(document.getElementById('clinicPrice').value);
+  if(!name){showToast('اسم العيادة مطلوب','error');return;}
+  if(!price||price<0){showToast('من فضلك أدخل سعراً صحيحاً','error');return;}
+  const data={name,price,description:document.getElementById('clinicDesc').value.trim(),icon:document.getElementById('clinicIcon').value.trim()||'🏥',color:document.getElementById('clinicColor').value,active:true};
+  const id=document.getElementById('clinicId').value;
+  if(id) updateClinic(id,data); else addClinic(data);
+  closeModal('clinicModal'); renderClinicsTable(); renderDashboard(); showToast(id?'تم تحديث العيادة':'تمت إضافة العيادة');
+}
+
+// ===================== DOCTORS =====================
+function populateDoctorClinicFilter() {
+  const sel=document.getElementById('doctorClinicFilter');
+  sel.innerHTML='<option value="">كل العيادات</option>'+getClinics().filter(c=>c.active).map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+}
+function renderDoctorsTable(search='') {
+  const cf=document.getElementById('doctorClinicFilter')?.value||'';
+  const doctors=getDoctors().filter(d=>(!search||d.name.includes(search)||d.title.includes(search))&&(!cf||d.clinicId===cf));
+  document.getElementById('doctorsBody').innerHTML=doctors.length===0
+    ?'<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);">لا يوجد أطباء</td></tr>'
+    :doctors.map(d=>{const cl=getClinic(d.clinicId);return`<tr>
+      <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;">👨‍⚕️</div><strong>${d.name}</strong></div></td>
+      <td style="font-size:0.85rem;">${d.title}</td>
+      <td><span class="badge badge-primary">${cl?cl.name:'-'}</span></td>
+      <td style="font-size:0.82rem;color:var(--text-muted);">${d.experience||'-'}</td>
+      <td><span class="badge ${d.active?'badge-success':'badge-danger'}">${d.active?'نشط':'معطل'}</span></td>
+      <td><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-outline-primary" onclick="editDoctor('${d.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="confirmDelete('doctor','${d.id}','${d.name}')">🗑️</button></div></td>
+    </tr>`}).join('');
+}
+function openDoctorModal(id=null) {
+  document.getElementById('doctorModalTitle').textContent=id?'تعديل بيانات الطبيب':'إضافة طبيب جديد';
+  document.getElementById('doctorId').value=id||'';
+  ['doctorName','doctorTitle','doctorExp'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('doctorClinicId').innerHTML=getClinics().filter(c=>c.active).map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  if(id){const d=getDoctor(id);if(d){document.getElementById('doctorName').value=d.name;document.getElementById('doctorTitle').value=d.title;document.getElementById('doctorExp').value=d.experience||'';document.getElementById('doctorClinicId').value=d.clinicId;}}
+  openModal('doctorModal');
+}
+function editDoctor(id){openDoctorModal(id);}
+function saveDoctor() {
+  const name=document.getElementById('doctorName').value.trim();
+  const title=document.getElementById('doctorTitle').value.trim();
+  const clinicId=document.getElementById('doctorClinicId').value;
+  if(!name){showToast('اسم الطبيب مطلوب','error');return;}
+  if(!title){showToast('التخصص مطلوب','error');return;}
+  const data={name,title,clinicId,experience:document.getElementById('doctorExp').value.trim(),active:true};
+  const id=document.getElementById('doctorId').value;
+  if(id) updateDoctor(id,data); else addDoctor(data);
+  closeModal('doctorModal'); renderDoctorsTable(); showToast(id?'تم تحديث بيانات الطبيب':'تمت إضافة الطبيب');
+}
+
+// ===================== SLOTS =====================
+function populateAllFilters(){populateSlotFilters();populateDoctorClinicFilter();}
+function populateSlotFilters(){
+  const clinics=getClinics().filter(c=>c.active);
+  const opts='<option value="">كل العيادات</option>'+clinics.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  document.getElementById('slotClinicFilter').innerHTML=opts;
+  document.getElementById('slotClinicId')&&(document.getElementById('slotClinicId').innerHTML=opts);
+}
+function onSlotClinicChange(){
+  const cid=document.getElementById('slotClinicFilter').value;
+  const docs=cid?getDoctors().filter(d=>d.clinicId===cid&&d.active):getDoctors().filter(d=>d.active);
+  document.getElementById('slotDoctorFilter').innerHTML='<option value="">كل الأطباء</option>'+docs.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+  renderSlotsTable();
+}
+function populateSlotDoctors(){
+  const cid=document.getElementById('slotClinicId').value;
+  document.getElementById('slotDoctorId').innerHTML=getDoctors().filter(d=>d.clinicId===cid&&d.active).map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+}
+function renderSlotsTable(){
+  const cid=document.getElementById('slotClinicFilter')?.value||'';
+  const did=document.getElementById('slotDoctorFilter')?.value||'';
+  const today=new Date().toISOString().split('T')[0];
+  const slots=getSlots().filter(s=>(!cid||s.clinicId===cid)&&(!did||s.doctorId===did)).sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById('slotsBody').innerHTML=slots.length===0
+    ?'<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد مواعيد</td></tr>'
+    :slots.map(s=>{const doc=getDoctor(s.doctorId);const cl=getClinic(s.clinicId);const past=s.date<today;return`<tr style="${past?'opacity:0.55;':''}">
+      <td style="font-size:0.85rem;">${s.date}</td><td style="font-size:0.82rem;">${s.dayName||''}</td><td><strong>${s.time}</strong></td>
+      <td style="font-size:0.82rem;">${doc?doc.name:'-'}</td><td style="font-size:0.78rem;color:var(--text-muted);">${cl?cl.name:'-'}</td>
+      <td><span class="badge ${s.bookedCount>=s.maxPatients?'badge-danger':'badge-success'}">${s.bookedCount}/${s.maxPatients}</span></td>
+      <td><span class="badge ${s.active&&!past?'badge-success':'badge-secondary'}">${past?'منتهي':s.active?'متاح':'معطل'}</span></td>
+      <td><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-outline-primary" onclick="editSlot('${s.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="confirmDelete('slot','${s.id}','موعد ${s.time}')">🗑️</button></div></td>
+    </tr>`}).join('');
+}
+function openSlotModal(id=null){
+  document.getElementById('slotModalTitle').textContent=id?'تعديل الموعد':'إضافة موعد جديد';
+  document.getElementById('slotId').value=id||'';
+  const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);
+  document.getElementById('slotDate').value=tomorrow.toISOString().split('T')[0];
+  document.getElementById('slotMax').value=5;
+  const clinics=getClinics().filter(c=>c.active);
+  document.getElementById('slotClinicId').innerHTML=clinics.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  if(clinics.length>0)populateSlotDoctors();
+  if(id){const s=getSlot(id);if(s){document.getElementById('slotDate').value=s.date;document.getElementById('slotTime').value=s.time;document.getElementById('slotMax').value=s.maxPatients;document.getElementById('slotClinicId').value=s.clinicId;populateSlotDoctors();setTimeout(()=>{document.getElementById('slotDoctorId').value=s.doctorId;},0);}}
+  openModal('slotModal');
+}
+function editSlot(id){openSlotModal(id);}
+function saveSlot(){
+  const cid=document.getElementById('slotClinicId').value;
+  const did=document.getElementById('slotDoctorId').value;
+  const date=document.getElementById('slotDate').value;
+  const time=document.getElementById('slotTime').value;
+  const max=parseInt(document.getElementById('slotMax').value);
+  if(!cid||!did){showToast('اختر العيادة والطبيب','error');return;}
+  if(!date){showToast('التاريخ مطلوب','error');return;}
+  const dayNames=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const d=new Date(date+'T00:00:00');
+  const data={clinicId:cid,doctorId:did,date,dayName:dayNames[d.getDay()],time,maxPatients:max||5};
+  const id=document.getElementById('slotId').value;
+  if(id)updateSlot(id,data);else addSlot(data);
+  closeModal('slotModal');renderSlotsTable();showToast(id?'تم تحديث الموعد':'تمت إضافة الموعد');
+}
+
+// ===================== BOOKINGS =====================
+function renderBookingFilters() {
+  const filters = [{key:'all',label:'الكل'},{key:'pending',label:'قيد الانتظار'},{key:'confirmed',label:'مؤكد'},{key:'cancelled',label:'ملغي'},{key:'completed',label:'مكتمل'}];
+  document.getElementById('bookingFilters').innerHTML = filters.map(f=>`<button class="filter-chip ${bookingStatusFilter===f.key?'active':''}" onclick="setBookingFilter('${f.key}')">${f.label}</button>`).join('');
+}
+function setBookingFilter(s) { bookingStatusFilter=s; renderBookingFilters(); renderBookingsTable(); }
+
+function renderBookingsTable(search='') {
+  let bookings = getBookings().filter(b =>
+    (bookingStatusFilter==='all'||b.status===bookingStatusFilter) &&
+    (!search || b.patientName.includes(search) || b.id.includes(search) || (b.phone||'').includes(search))
+  ).reverse();
+
+  document.getElementById('bookingsBody').innerHTML = bookings.length === 0
+    ? '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد حجوزات</td></tr>'
+    : bookings.map(b => {
+        const st = getStatusBadge(b.status);
+        return `<tr>
+          <td><strong style="font-size:0.82rem;color:var(--primary);">${b.id}</strong></td>
+          <td style="font-size:0.85rem;"><strong>${b.patientName}</strong><br><span style="color:var(--text-muted);font-size:0.75rem;">${b.phone||''}</span></td>
+          <td style="font-size:0.82rem;">${b.clinicName}<br><span style="color:var(--text-muted);font-size:0.75rem;">${b.doctorName||''}</span></td>
+          <td style="font-size:0.82rem;">${b.date}<br><span style="color:var(--text-muted);font-size:0.75rem;">${b.time||''}</span></td>
+          <td style="font-size:0.9rem;font-weight:900;color:var(--primary);">${b.amount||0} ج</td>
+          <td>
+            <select class="status-select" onchange="updateBookingStatus('${b.id}','status',this.value)">
+              <option value="pending"   ${b.status==='pending'   ?'selected':''}>قيد الانتظار</option>
+              <option value="confirmed" ${b.status==='confirmed' ?'selected':''}>مؤكد</option>
+              <option value="cancelled" ${b.status==='cancelled' ?'selected':''}>ملغي</option>
+              <option value="completed" ${b.status==='completed' ?'selected':''}>مكتمل</option>
+            </select>
+          </td>
+          <td>
+            <div style="display:flex;gap:4px;">
+              ${b.status!=='confirmed'?`<button class="btn btn-success btn-sm" onclick="quickConfirm('${b.id}')" title="تأكيد">✓</button>`:''}
+              ${b.status!=='cancelled'?`<button class="btn btn-danger btn-sm" onclick="quickCancel('${b.id}')"  title="إلغاء">✕</button>`:''}
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+}
+
+function updateBookingStatus(id,field,value) { const d={};d[field]=value;updateBooking(id,d);renderBookingsTable();renderDashboard();showToast('تم تحديث حالة الحجز'); }
+function quickConfirm(id) { updateBooking(id,{status:'confirmed'});renderBookingsTable();renderDashboard();showToast('تم تأكيد الحجز'); }
+function quickCancel(id)  { updateBooking(id,{status:'cancelled'});renderBookingsTable();renderDashboard();showToast('تم إلغاء الحجز','error'); }
+
+function exportBookings() {
+  const bookings = getBookings();
+  const header   = 'رقم الحجز,اسم المريض,الهاتف,الرقم القومي,العيادة,الطبيب,التاريخ,الوقت,سعر الكشف,حالة الحجز\n';
+  const rows = bookings.map(b => [
+    b.id, b.patientName, b.phone||'', b.nationalId||'',
+    b.clinicName, b.doctorName, b.date||'', b.time||'',
+    b.amount||0, b.status
+  ].join(',')).join('\n');
+  const blob = new Blob(['﻿' + header + rows], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'bookings_' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+  showToast('تم تصدير الملف بنجاح');
+}
+
+// ===================== DELETE =====================
+function confirmDelete(type,id,name) {
+  pendingDelete={type,id};
+  const msgs = {
+    clinic: `هل أنت متأكد من حذف عيادة "${name}"؟ سيتم حذف جميع الأطباء والمواعيد المرتبطة بها.`,
+    doctor: `هل أنت متأكد من حذف الطبيب "${name}"؟ سيتم حذف جميع مواعيده.`,
+    slot:   `هل أنت متأكد من حذف "${name}"؟`,
+  };
+  document.getElementById('deleteMsg').textContent = msgs[type]||'هل أنت متأكد من الحذف؟';
+  document.getElementById('deleteConfirmBtn').onclick = doDelete;
+  openModal('deleteModal');
+}
+function doDelete() {
+  if (!pendingDelete) return;
+  if (pendingDelete.type==='clinic') { deleteClinic(pendingDelete.id); renderClinicsTable(); }
+  if (pendingDelete.type==='doctor') { deleteDoctor(pendingDelete.id); renderDoctorsTable(); }
+  if (pendingDelete.type==='slot')   { deleteSlot(pendingDelete.id);   renderSlotsTable(); }
+  renderDashboard();
+  closeModal('deleteModal');
+  showToast('تم الحذف بنجاح');
+  pendingDelete=null;
+}
+
+// ===================== MODALS =====================
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target===m) closeModal(m.id); }));
+
+// ===================== BOOT =====================
+checkAuth();
+</script>
+</body>
+</html>

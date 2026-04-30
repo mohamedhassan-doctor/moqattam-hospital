@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حجز موعد - مستشفى المقطم التخصصي</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .booking-wrap { max-width: 820px; margin: 0 auto; padding: 40px 20px; }
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+    .clinic-select-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+    .clinic-select-card {
+      border: 2px solid var(--border); border-radius: var(--radius); padding: 16px;
+      cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; background: white;
+    }
+    .clinic-select-card:hover { border-color: var(--primary); background: var(--primary-light); }
+    .clinic-select-card.selected { border-color: var(--primary); background: var(--primary-light); }
+    .clinic-select-card .icon { font-size: 1.8rem; }
+    .clinic-select-card h4 { font-size: 0.88rem; font-weight: 800; margin-bottom: 2px; }
+    .clinic-select-card span { font-size: 0.75rem; color: var(--text-muted); }
+    .selected-summary {
+      background: var(--primary-light); border: 1px solid var(--primary);
+      border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 24px;
+      font-size: 0.88rem; font-weight: 600; color: var(--primary-dark);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .date-group { margin-bottom: 20px; }
+    .date-group h4 { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .nav-btn-row { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 12px; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <div class="nav-logo">م</div>
+      <div class="nav-brand-text">
+        <h1>مستشفى المقطم التخصصي</h1>
+        <span>حجز المواعيد الإلكتروني</span>
+      </div>
+    </a>
+    <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">الرئيسية</a>
+      <a href="clinics.html">العيادات</a>
+      <a href="booking.html" class="active">احجز موعد</a>
+      <a href="admin.html" class="nav-btn">لوحة التحكم</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">
+      <a href="index.html">الرئيسية</a>
+      <span>›</span>
+      <a href="clinics.html">العيادات</a>
+      <span>›</span>
+      <span>حجز موعد</span>
+    </div>
+    <h1>📅 احجز موعدك الآن</h1>
+    <p>أكمل الخطوات التالية لتأكيد حجزك</p>
+  </div>
+</div>
+
+<div class="booking-wrap">
+
+  <!-- STEPS INDICATOR -->
+  <div class="steps-indicator">
+    <div class="step-ind active" id="si1">
+      <div class="step-circle">١</div>
+      <div class="step-label">اختر العيادة والطبيب</div>
+    </div>
+    <div class="step-ind" id="si2">
+      <div class="step-circle">٢</div>
+      <div class="step-label">بيانات المريض</div>
+    </div>
+    <div class="step-ind" id="si3">
+      <div class="step-circle">٣</div>
+      <div class="step-label">اختر الموعد</div>
+    </div>
+  </div>
+
+  <!-- STEP 1: CLINIC + DOCTOR -->
+  <div class="step-panel active" id="step1">
+    <div class="card">
+      <div class="card-header"><h3>🏥 اختر العيادة</h3></div>
+      <div class="card-body">
+        <div class="clinic-select-grid" id="clinicSelectGrid"></div>
+        <div id="doctorsSection" style="display:none;">
+          <h3 style="font-size:1rem;font-weight:800;margin-bottom:16px;padding-top:8px;border-top:1px solid var(--border);">👨‍⚕️ اختر الطبيب</h3>
+          <div class="doctors-grid" id="doctorsGrid"></div>
+        </div>
+        <div class="nav-btn-row">
+          <div></div>
+          <button class="btn btn-primary" onclick="goToStep2()">التالي ←</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: PATIENT INFO -->
+  <div class="step-panel" id="step2">
+    <div class="card">
+      <div class="card-header"><h3>👤 بيانات المريض</h3></div>
+      <div class="card-body">
+        <div id="step2Summary" class="selected-summary"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">الاسم الكامل <span>*</span></label>
+            <input type="text" class="form-control" id="patientName" placeholder="أدخل الاسم الرباعي">
+          </div>
+          <div class="form-group">
+            <label class="form-label">رقم الهاتف <span>*</span></label>
+            <input type="tel" class="form-control" id="patientPhone" placeholder="01XXXXXXXXX" maxlength="11">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">الرقم القومي <span>*</span></label>
+            <input type="text" class="form-control" id="patientNID" placeholder="14 رقم" maxlength="14">
+          </div>
+          <div class="form-group">
+            <label class="form-label">العمر</label>
+            <input type="number" class="form-control" id="patientAge" placeholder="العمر" min="1" max="120">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ملاحظات للطبيب</label>
+          <textarea class="form-control" id="patientNotes" rows="3" placeholder="اذكر أي شكاوى أو معلومات مهمة للطبيب..."></textarea>
+        </div>
+        <div class="nav-btn-row">
+          <button class="btn btn-outline-primary" onclick="goToStep(1)">→ السابق</button>
+          <button class="btn btn-primary" onclick="goToStep3()">التالي ←</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: TIME SLOT -->
+  <div class="step-panel" id="step3">
+    <div class="card">
+      <div class="card-header"><h3>⏰ اختر الموعد المناسب</h3></div>
+      <div class="card-body">
+        <div id="step3Summary" class="selected-summary"></div>
+        <div id="slotsContainer"></div>
+        <div class="nav-btn-row">
+          <button class="btn btn-outline-primary" onclick="goToStep(2)">→ السابق</button>
+          <button class="btn btn-primary btn-lg" onclick="confirmBooking()">تأكيد الحجز ✓</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer style="background:var(--primary-dark);color:rgba(255,255,255,0.85);padding:32px 20px;text-align:center;">
+  <p style="font-size:0.85rem;">© 2025 مستشفى المقطم التخصصي. جميع الحقوق محفوظة.</p>
+</footer>
+
+<script src="js/app.js"></script>
+<script>
+  let selectedClinic = null;
+  let selectedDoctor = null;
+  let selectedSlot = null;
+  let currentStep = 1;
+
+  function init() {
+    renderClinicGrid();
+    const clinicId = getParam('clinicId');
+    if (clinicId) selectClinic(clinicId);
+  }
+
+  function renderClinicGrid() {
+    const clinics = getClinics().filter(c => c.active);
+    document.getElementById('clinicSelectGrid').innerHTML = clinics.map(c => `
+      <div class="clinic-select-card ${selectedClinic && selectedClinic.id === c.id ? 'selected' : ''}" onclick="selectClinic('${c.id}')">
+        <div class="icon">${c.icon}</div>
+        <div>
+          <h4>${c.name}</h4>
+          <span>${c.price} جنيه · سعر الكشف</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function selectClinic(id) {
+    selectedClinic = getClinic(id);
+    selectedDoctor = null;
+    selectedSlot = null;
+    renderClinicGrid();
+    renderDoctors();
+  }
+
+  function renderDoctors() {
+    if (!selectedClinic) return;
+    const doctors = getDoctorsByClinic(selectedClinic.id);
+    document.getElementById('doctorsSection').style.display = 'block';
+    document.getElementById('doctorsGrid').innerHTML = doctors.length === 0
+      ? '<p style="color:var(--text-muted);font-size:0.88rem;">لا يوجد أطباء متاحون في هذه العيادة حالياً.</p>'
+      : doctors.map(d => `
+        <div class="doctor-card ${selectedDoctor && selectedDoctor.id === d.id ? 'selected' : ''}" onclick="selectDoctor('${d.id}')">
+          <div class="doctor-avatar">👨‍⚕️</div>
+          <div class="doctor-info">
+            <h4>${d.name}</h4>
+            <p>${d.title}</p>
+            <div class="exp">⭐ ${d.experience}</div>
+          </div>
+        </div>
+      `).join('');
+  }
+
+  function selectDoctor(id) {
+    selectedDoctor = getDoctor(id);
+    selectedSlot = null;
+    renderDoctors();
+  }
+
+  function goToStep2() {
+    if (!selectedClinic) { showToast('من فضلك اختر العيادة أولاً', 'error'); return; }
+    if (!selectedDoctor) { showToast('من فضلك اختر الطبيب', 'error'); return; }
+    document.getElementById('step2Summary').innerHTML = `✅ ${selectedClinic.name} — ${selectedDoctor.name} — ${selectedClinic.price} جنيه`;
+    goToStep(2);
+  }
+
+  function goToStep3() {
+    const name = document.getElementById('patientName').value.trim();
+    const phone = document.getElementById('patientPhone').value.trim();
+    const nid = document.getElementById('patientNID').value.trim();
+    if (!name) { showToast('من فضلك أدخل اسمك الكامل', 'error'); return; }
+    if (!phone || phone.length < 10) { showToast('من فضلك أدخل رقم هاتف صحيح', 'error'); return; }
+    if (!nid || nid.length !== 14) { showToast('من فضلك أدخل الرقم القومي (14 رقم)', 'error'); return; }
+    document.getElementById('step3Summary').innerHTML = `👤 ${name} — 📱 ${phone} — 🏥 ${selectedDoctor.name}`;
+    renderSlots();
+    goToStep(3);
+  }
+
+  function renderSlots() {
+    const slots = getAvailableSlots(selectedDoctor.id);
+    const container = document.getElementById('slotsContainer');
+    if (slots.length === 0) {
+      container.innerHTML = '<div class="empty-state"><span class="emoji">📅</span><h3>لا توجد مواعيد متاحة</h3><p>لا توجد مواعيد متاحة لهذا الطبيب في الوقت الحالي.</p></div>';
+      return;
+    }
+    const grouped = {};
+    slots.forEach(s => {
+      const key = s.date;
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(s);
+    });
+    container.innerHTML = Object.keys(grouped).sort().map(date => `
+      <div class="date-group">
+        <h4>📆 ${formatDate(date)}</h4>
+        <div class="slots-grid">
+          ${grouped[date].map(s => `
+            <div class="slot-btn ${selectedSlot && selectedSlot.id === s.id ? 'selected' : ''}" onclick="selectSlot('${s.id}')">
+              ${s.time}
+              <span class="slot-date">${5 - s.bookedCount} مقعد متبقي</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function selectSlot(id) {
+    selectedSlot = getSlot(id);
+    renderSlots();
+  }
+
+  function goToStep(n) {
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('step' + n).classList.add('active');
+    document.querySelectorAll('.step-ind').forEach((el, i) => {
+      el.classList.remove('active', 'done');
+      if (i < n - 1) el.classList.add('done');
+      else if (i === n - 1) el.classList.add('active');
+    });
+    currentStep = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function confirmBooking() {
+    if (!selectedSlot) { showToast('من فضلك اختر موعداً متاحاً', 'error'); return; }
+    const booking = addBooking({
+      patientName: document.getElementById('patientName').value.trim(),
+      phone: document.getElementById('patientPhone').value.trim(),
+      nationalId: document.getElementById('patientNID').value.trim(),
+      age: document.getElementById('patientAge').value.trim(),
+      notes: document.getElementById('patientNotes').value.trim(),
+      clinicId: selectedClinic.id,
+      clinicName: selectedClinic.name,
+      doctorId: selectedDoctor.id,
+      doctorName: selectedDoctor.name,
+      slotId: selectedSlot.id,
+      date: selectedSlot.date,
+      time: selectedSlot.time,
+      amount: selectedClinic.price
+    });
+    window.location.href = 'confirmation.html?bookingId=' + booking.id;
+  }
+
+  init();
+</script>
+</body>
+</html>

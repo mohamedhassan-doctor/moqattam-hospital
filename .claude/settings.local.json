@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Remove-Item *)",
+      "PowerShell(\\(Get-Item \"C:\\\\Program Files\\\\Git\"\\).LinkType; \\(Get-Item \"C:\\\\Program Files\\\\Git\"\\).Target)",
+      "PowerShell(cmd /c \"where git 2>nul\")",
+      "PowerShell(cmd /c \"dir /s /b \"\"C:\\\\Program Files\\\\Git\\\\git.exe\"\" 2>nul\"; cmd /c \"dir /s /b \"\"C:\\\\Program Files\\\\Git\\\\cmd\\\\git.exe\"\" 2>nul\")",
+      "PowerShell(cmd /c \"dir \"\"C:\\\\Program Files\\\\Git\"\" /a\")"
+    ]
+  }
+}
