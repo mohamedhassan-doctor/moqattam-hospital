@@ -12,20 +12,23 @@ const INITIAL_CLINICS = [
 ];
 
 const INITIAL_DOCTORS = [
-  { id: 'd1', clinicId: 'c1', name: 'د. أحمد محمود السيد', title: 'استشاري أمراض القلب', experience: '15 سنة خبرة', active: true },
-  { id: 'd2', clinicId: 'c1', name: 'د. محمد عبد الله كريم', title: 'أخصائي قلب وأوعية دموية', experience: '10 سنوات خبرة', active: true },
-  { id: 'd3', clinicId: 'c2', name: 'د. خالد إبراهيم حسن', title: 'استشاري جراحة العظام', experience: '20 سنة خبرة', active: true },
-  { id: 'd4', clinicId: 'c2', name: 'د. عمر فاروق عثمان', title: 'أخصائي العظام والمفاصل', experience: '12 سنة خبرة', active: true },
-  { id: 'd5', clinicId: 'c3', name: 'د. سمر محمد علي', title: 'استشارية طب الأطفال', experience: '18 سنة خبرة', active: true },
-  { id: 'd6', clinicId: 'c3', name: 'د. هنا أحمد رضا', title: 'أخصائية طب الأطفال', experience: '8 سنوات خبرة', active: true },
-  { id: 'd7', clinicId: 'c4', name: 'د. نهال عبد الرحمن', title: 'استشارية نساء وتوليد', experience: '22 سنة خبرة', active: true },
-  { id: 'd8', clinicId: 'c4', name: 'د. ريم مصطفى جمال', title: 'أخصائية نساء وتوليد', experience: '9 سنوات خبرة', active: true },
-  { id: 'd9', clinicId: 'c5', name: 'د. ياسمين حسام الدين', title: 'استشارية الجلدية والتجميل', experience: '14 سنة خبرة', active: true },
-  { id: 'd10', clinicId: 'c5', name: 'د. كريم سامي نصر', title: 'أخصائي الجلدية', experience: '7 سنوات خبرة', active: true },
-  { id: 'd11', clinicId: 'c6', name: 'د. طارق عبد الحميد', title: 'استشاري الباطنة والجهاز الهضمي', experience: '17 سنة خبرة', active: true },
-  { id: 'd12', clinicId: 'c6', name: 'د. منى صلاح عبد الله', title: 'أخصائية الباطنة', experience: '11 سنة خبرة', active: true }
+  { id: 'd1',  clinicId: 'c1', name: 'د. أحمد محمود السيد',     title: 'استشاري أمراض القلب',              experience: '15 سنة خبرة',   active: true },
+  { id: 'd2',  clinicId: 'c1', name: 'د. محمد عبد الله كريم',   title: 'أخصائي قلب وأوعية دموية',          experience: '10 سنوات خبرة', active: true },
+  { id: 'd3',  clinicId: 'c2', name: 'د. خالد إبراهيم حسن',     title: 'استشاري جراحة العظام',             experience: '20 سنة خبرة',   active: true },
+  { id: 'd4',  clinicId: 'c2', name: 'د. عمر فاروق عثمان',      title: 'أخصائي العظام والمفاصل',           experience: '12 سنة خبرة',   active: true },
+  { id: 'd5',  clinicId: 'c3', name: 'د. سمر محمد علي',         title: 'استشارية طب الأطفال',              experience: '18 سنة خبرة',   active: true },
+  { id: 'd6',  clinicId: 'c3', name: 'د. هنا أحمد رضا',         title: 'أخصائية طب الأطفال',              experience: '8 سنوات خبرة',  active: true },
+  { id: 'd7',  clinicId: 'c4', name: 'د. نهال عبد الرحمن',      title: 'استشارية نساء وتوليد',             experience: '22 سنة خبرة',   active: true },
+  { id: 'd8',  clinicId: 'c4', name: 'د. ريم مصطفى جمال',       title: 'أخصائية نساء وتوليد',             experience: '9 سنوات خبرة',  active: true },
+  { id: 'd9',  clinicId: 'c5', name: 'د. ياسمين حسام الدين',    title: 'استشارية الجلدية والتجميل',        experience: '14 سنة خبرة',   active: true },
+  { id: 'd10', clinicId: 'c5', name: 'د. كريم سامي نصر',        title: 'أخصائي الجلدية',                  experience: '7 سنوات خبرة',  active: true },
+  { id: 'd11', clinicId: 'c6', name: 'د. طارق عبد الحميد',      title: 'استشاري الباطنة والجهاز الهضمي',  experience: '17 سنة خبرة',   active: true },
+  { id: 'd12', clinicId: 'c6', name: 'د. منى صلاح عبد الله',    title: 'أخصائية الباطنة',                 experience: '11 سنة خبرة',   active: true }
 ];
 
+const INITIAL_ADMINS = [
+  { id: 'admin_sa', username: 'superadmin', password: 'superadmin123', fullName: 'المدير العام', role: 'superadmin', active: true, createdAt: '2025-01-01T00:00:00.000Z' }
+];
 
 function generateInitialSlots() {
   const slots = [];
@@ -58,7 +61,9 @@ const KEYS = {
   DOCTORS:     'mq_doctors',
   SLOTS:       'mq_slots',
   BOOKINGS:    'mq_bookings',
-  INITIALIZED: 'mq_initialized'
+  INITIALIZED: 'mq_initialized',
+  ADMINS:      'mq_admins',
+  LOGS:        'mq_logs'
 };
 
 // ---- Init ----
@@ -69,6 +74,12 @@ function initData() {
     localStorage.setItem(KEYS.SLOTS,     JSON.stringify(generateInitialSlots()));
     localStorage.setItem(KEYS.BOOKINGS,  JSON.stringify([]));
     localStorage.setItem(KEYS.INITIALIZED, 'true');
+  }
+  if (!localStorage.getItem(KEYS.ADMINS)) {
+    localStorage.setItem(KEYS.ADMINS, JSON.stringify(INITIAL_ADMINS));
+  }
+  if (!localStorage.getItem(KEYS.LOGS)) {
+    localStorage.setItem(KEYS.LOGS, JSON.stringify([]));
   }
 }
 
@@ -85,30 +96,30 @@ function updateClinic(id, data) { saveClinics(getClinics().map(c => c.id === id 
 function deleteClinic(id)  { saveClinics(getClinics().filter(c => c.id !== id)); saveDoctors(getDoctors().filter(d => d.clinicId !== id)); saveSlots(getSlots().filter(s => s.clinicId !== id)); }
 
 // ---- Doctors ----
-function getDoctors()              { return getItems(KEYS.DOCTORS); }
-function getDoctor(id)             { return getDoctors().find(d => d.id === id); }
-function getDoctorsByClinic(cid)   { return getDoctors().filter(d => d.clinicId === cid && d.active); }
-function saveDoctors(d)            { setItems(KEYS.DOCTORS, d); }
-function addDoctor(doctor)         { const all = getDoctors(); doctor.id = 'd' + Date.now(); doctor.active = true; all.push(doctor); saveDoctors(all); return doctor; }
-function updateDoctor(id, data)    { saveDoctors(getDoctors().map(d => d.id === id ? { ...d, ...data } : d)); }
-function deleteDoctor(id)          { saveDoctors(getDoctors().filter(d => d.id !== id)); saveSlots(getSlots().filter(s => s.doctorId !== id)); }
+function getDoctors()            { return getItems(KEYS.DOCTORS); }
+function getDoctor(id)           { return getDoctors().find(d => d.id === id); }
+function getDoctorsByClinic(cid) { return getDoctors().filter(d => d.clinicId === cid && d.active); }
+function saveDoctors(d)          { setItems(KEYS.DOCTORS, d); }
+function addDoctor(doctor)       { const all = getDoctors(); doctor.id = 'd' + Date.now(); doctor.active = true; all.push(doctor); saveDoctors(all); return doctor; }
+function updateDoctor(id, data)  { saveDoctors(getDoctors().map(d => d.id === id ? { ...d, ...data } : d)); }
+function deleteDoctor(id)        { saveDoctors(getDoctors().filter(d => d.id !== id)); saveSlots(getSlots().filter(s => s.doctorId !== id)); }
 
 // ---- Slots ----
-function getSlots()                { return getItems(KEYS.SLOTS); }
-function getSlot(id)               { return getSlots().find(s => s.id === id); }
+function getSlots()              { return getItems(KEYS.SLOTS); }
+function getSlot(id)             { return getSlots().find(s => s.id === id); }
 function getAvailableSlots(doctorId) {
   const today = new Date().toISOString().split('T')[0];
   return getSlots().filter(s => s.doctorId === doctorId && s.active && s.date >= today && s.bookedCount < s.maxPatients);
 }
-function saveSlots(s)              { setItems(KEYS.SLOTS, s); }
-function addSlot(slot)             { const all = getSlots(); slot.id = 's' + Date.now(); slot.bookedCount = 0; slot.active = true; all.push(slot); saveSlots(all); return slot; }
-function updateSlot(id, data)      { saveSlots(getSlots().map(s => s.id === id ? { ...s, ...data } : s)); }
-function deleteSlot(id)            { saveSlots(getSlots().filter(s => s.id !== id)); }
+function saveSlots(s)            { setItems(KEYS.SLOTS, s); }
+function addSlot(slot)           { const all = getSlots(); slot.id = 's' + Date.now(); slot.bookedCount = 0; slot.active = true; all.push(slot); saveSlots(all); return slot; }
+function updateSlot(id, data)    { saveSlots(getSlots().map(s => s.id === id ? { ...s, ...data } : s)); }
+function deleteSlot(id)          { saveSlots(getSlots().filter(s => s.id !== id)); }
 
 // ---- Bookings ----
-function getBookings()    { return getItems(KEYS.BOOKINGS); }
-function getBooking(id)   { return getBookings().find(b => b.id === id); }
-function saveBookings(b)  { setItems(KEYS.BOOKINGS, b); }
+function getBookings()   { return getItems(KEYS.BOOKINGS); }
+function getBooking(id)  { return getBookings().find(b => b.id === id); }
+function saveBookings(b) { setItems(KEYS.BOOKINGS, b); }
 function addBooking(booking) {
   const all = getBookings();
   booking.id        = generateBookingNumber();
@@ -123,10 +134,48 @@ function addBooking(booking) {
 }
 function updateBooking(id, data) { saveBookings(getBookings().map(b => b.id === id ? { ...b, ...data } : b)); }
 
+// ---- Admin Users ----
+function getAdmins()                 { return getItems(KEYS.ADMINS); }
+function getAdmin(id)                { return getAdmins().find(a => a.id === id); }
+function getAdminByUsername(u)       { return getAdmins().find(a => a.username === u); }
+function saveAdmins(admins)          { setItems(KEYS.ADMINS, admins); }
+function addAdmin(admin)             { const all = getAdmins(); admin.id = 'admin_' + Date.now(); admin.active = true; admin.createdAt = new Date().toISOString(); all.push(admin); saveAdmins(all); return admin; }
+function updateAdmin(id, data)       { saveAdmins(getAdmins().map(a => a.id === id ? { ...a, ...data } : a)); }
+function deleteAdmin(id)             { saveAdmins(getAdmins().filter(a => a.id !== id)); }
+
+// ---- Activity Logs ----
+function getLogs()          { return getItems(KEYS.LOGS); }
+function saveLogs(logs)     { setItems(KEYS.LOGS, logs); }
+function addLog(actionType, description) {
+  const admin = getCurrentAdmin();
+  if (!admin) return;
+  const logs = getLogs();
+  logs.push({
+    id: 'log_' + Date.now() + '_' + Math.random().toString(36).slice(2, 5),
+    username:   admin.username,
+    fullName:   admin.fullName,
+    role:       admin.role,
+    actionType,
+    description,
+    timestamp:  new Date().toISOString()
+  });
+  saveLogs(logs);
+}
+
 // ---- Admin Auth ----
-function isAdminLoggedIn() { return sessionStorage.getItem('mq_admin_session') === 'true'; }
-function adminLogin(u, p)  { if (u === 'admin' && p === 'admin123') { sessionStorage.setItem('mq_admin_session', 'true'); return true; } return false; }
-function adminLogout()     { sessionStorage.removeItem('mq_admin_session'); }
+function adminLogin(username, password) {
+  const admin = getAdminByUsername(username);
+  if (admin && admin.password === password && admin.active) {
+    sessionStorage.setItem('mq_admin_session', JSON.stringify({ id: admin.id, username: admin.username, fullName: admin.fullName, role: admin.role }));
+    addLog('login', 'تسجيل دخول');
+    return admin;
+  }
+  return null;
+}
+function isAdminLoggedIn()  { return !!sessionStorage.getItem('mq_admin_session'); }
+function getCurrentAdmin()  { try { return JSON.parse(sessionStorage.getItem('mq_admin_session')); } catch { return null; } }
+function isSuperAdmin()     { const a = getCurrentAdmin(); return a && a.role === 'superadmin'; }
+function adminLogout()      { addLog('logout', 'تسجيل خروج'); sessionStorage.removeItem('mq_admin_session'); }
 
 // ---- Utilities ----
 function generateBookingNumber() { return 'MQ' + Date.now().toString().slice(-7); }

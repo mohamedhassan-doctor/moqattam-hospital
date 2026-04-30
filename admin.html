@@ -20,9 +20,16 @@
     .booking-filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
     .filter-chip { padding: 6px 16px; border-radius: 50px; border: 1.5px solid var(--border); font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: 'Cairo',sans-serif; background: white; color: var(--text-muted); transition: all 0.2s; }
     .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
-    .copay-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 50px; font-size: 0.78rem; font-weight: 800; background: var(--primary-light); color: var(--primary); }
-    .ins-icon { font-size: 1.3rem; }
     th { white-space: nowrap; }
+    /* Multi-user & log styles */
+    .role-badge { display:inline-flex;align-items:center;padding:3px 12px;border-radius:50px;font-size:0.75rem;font-weight:800; }
+    .role-superadmin { background:#fce4ec;color:#c62828; }
+    .role-admin { background:#e3f2fd;color:#1565c0; }
+    .superadmin-only { display:none; }
+    .sidebar-sep { height:1px;background:rgba(255,255,255,0.12);margin:6px 0; }
+    .topbar-user-info { display:flex;align-items:center;gap:8px; }
+    .log-action-badge { display:inline-block;padding:2px 10px;border-radius:50px;font-size:0.73rem;font-weight:700;background:var(--primary-light);color:var(--primary);white-space:nowrap; }
+    .form-hint { font-size:0.78rem;color:var(--text-muted);margin-top:4px; }
   </style>
 </head>
 <body>
@@ -35,17 +42,17 @@
       <h2>مستشفى المقطم التخصصي</h2>
       <p>لوحة تحكم المسؤول</p>
     </div>
-    <div id="loginError" class="alert alert-danger" style="display:none;">❌ بيانات الدخول غير صحيحة</div>
+    <div id="loginError" class="alert alert-danger" style="display:none;">❌ بيانات الدخول غير صحيحة أو الحساب معطل</div>
     <div class="form-group">
       <label class="form-label">اسم المستخدم</label>
-      <input type="text" class="form-control" id="loginUser" placeholder="admin" value="admin">
+      <input type="text" class="form-control" id="loginUser" placeholder="أدخل اسم المستخدم" dir="ltr">
     </div>
     <div class="form-group">
       <label class="form-label">كلمة المرور</label>
-      <input type="password" class="form-control" id="loginPass" placeholder="••••••••" value="admin123" onkeydown="if(event.key==='Enter')doLogin()">
+      <input type="password" class="form-control" id="loginPass" placeholder="••••••••" dir="ltr" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
     <button class="btn btn-primary btn-block btn-lg" onclick="doLogin()" style="margin-top:8px;">🔐 دخول</button>
-    <p style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-top:16px;">بيانات التجربة: admin / admin123</p>
+    <p style="text-align:center;font-size:0.76rem;color:var(--text-muted);margin-top:14px;">المدير العام: superadmin / superadmin123</p>
   </div>
 </div>
 
@@ -60,11 +67,14 @@
         <div class="sidebar-brand-text"><h3>مستشفى المقطم</h3><span>لوحة التحكم</span></div>
       </div>
       <nav class="sidebar-nav" id="sidebarNav">
-        <a href="#" onclick="showSection('dashboard')"  id="nav-dashboard"  class="active"><span class="nav-icon">📊</span> لوحة التحكم</a>
-        <a href="#" onclick="showSection('clinics')"    id="nav-clinics"   ><span class="nav-icon">🏥</span> إدارة العيادات</a>
-        <a href="#" onclick="showSection('doctors')"    id="nav-doctors"   ><span class="nav-icon">👨‍⚕️</span> إدارة الأطباء</a>
-        <a href="#" onclick="showSection('slots')"      id="nav-slots"     ><span class="nav-icon">📅</span> إدارة المواعيد</a>
-        <a href="#" onclick="showSection('bookings')"   id="nav-bookings"  ><span class="nav-icon">📋</span> الحجوزات</a>
+        <a href="#" onclick="return showSection('dashboard')"  id="nav-dashboard" class="active"><span class="nav-icon">📊</span> لوحة التحكم</a>
+        <a href="#" onclick="return showSection('clinics')"    id="nav-clinics"  ><span class="nav-icon">🏥</span> إدارة العيادات</a>
+        <a href="#" onclick="return showSection('doctors')"    id="nav-doctors"  ><span class="nav-icon">👨‍⚕️</span> إدارة الأطباء</a>
+        <a href="#" onclick="return showSection('slots')"      id="nav-slots"    ><span class="nav-icon">📅</span> إدارة المواعيد</a>
+        <a href="#" onclick="return showSection('bookings')"   id="nav-bookings" ><span class="nav-icon">📋</span> الحجوزات</a>
+        <div class="sidebar-sep superadmin-only"></div>
+        <a href="#" onclick="return showSection('admins')"     id="nav-admins"   class="superadmin-only"><span class="nav-icon">👥</span> المستخدمون</a>
+        <a href="#" onclick="return showSection('logs')"       id="nav-logs"     class="superadmin-only"><span class="nav-icon">📝</span> سجل النشاط</a>
       </nav>
       <div class="sidebar-footer">
         <button class="btn btn-danger btn-sm btn-block" onclick="doLogout()">🚪 تسجيل الخروج</button>
@@ -79,8 +89,9 @@
           <button class="sidebar-mobile-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('open')">☰</button>
           <h2 id="pageTitle">لوحة التحكم</h2>
         </div>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <span style="font-size:0.82rem;color:var(--text-muted);">👤 مسؤول النظام</span>
+        <div class="topbar-user-info">
+          <span id="topbarName" style="font-size:0.85rem;font-weight:700;color:var(--text-muted);"></span>
+          <span id="topbarRole" class="role-badge"></span>
           <a href="index.html" class="btn btn-outline-primary btn-sm">← الموقع</a>
         </div>
       </div>
@@ -167,15 +178,7 @@
             <div class="table-wrap">
               <table>
                 <thead>
-                  <tr>
-                    <th>رقم الحجز</th>
-                    <th>المريض</th>
-                    <th>العيادة / الطبيب</th>
-                    <th>التاريخ والوقت</th>
-                    <th>سعر الكشف</th>
-                    <th>حالة الحجز</th>
-                    <th>إجراءات</th>
-                  </tr>
+                  <tr><th>رقم الحجز</th><th>المريض</th><th>العيادة / الطبيب</th><th>التاريخ والوقت</th><th>سعر الكشف</th><th>حالة الحجز</th><th>إجراءات</th></tr>
                 </thead>
                 <tbody id="bookingsBody"></tbody>
               </table>
@@ -183,6 +186,60 @@
           </div>
           <div class="alert alert-info" style="margin-top:16px;">
             💵 <strong>الدفع عند الاستقبال:</strong> يتم تحصيل رسوم الكشف من المرضى عند حضورهم للعيادة.
+          </div>
+        </div>
+
+        <!-- ===== ADMIN USERS (superadmin only) ===== -->
+        <div class="section-panel" id="panel-admins">
+          <div class="action-bar">
+            <input type="text" placeholder="🔍 ابحث باسم المستخدم أو الاسم الكامل..." oninput="renderAdminsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:360px;">
+            <button class="btn btn-primary" onclick="openAdminModal()">+ إضافة مستخدم</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>الاسم الكامل</th><th>اسم المستخدم</th><th>الدور</th><th>الحالة</th><th>تاريخ الإنشاء</th><th>إجراءات</th></tr></thead>
+                <tbody id="adminsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ACTIVITY LOG (superadmin only) ===== -->
+        <div class="section-panel" id="panel-logs">
+          <div class="action-bar" style="flex-wrap:wrap;gap:10px;align-items:flex-start;">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;flex:1;">
+              <select id="logUserFilter" onchange="renderLogsTable()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;">
+                <option value="">👤 كل المستخدمين</option>
+              </select>
+              <select id="logActionFilter" onchange="renderLogsTable()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;">
+                <option value="">📂 كل الإجراءات</option>
+                <option value="login">تسجيل الدخول</option>
+                <option value="logout">تسجيل الخروج</option>
+                <option value="clinic">العيادات</option>
+                <option value="doctor">الأطباء</option>
+                <option value="slot">المواعيد</option>
+                <option value="booking">الحجوزات</option>
+                <option value="admin">المستخدمون</option>
+              </select>
+              <input type="date" id="logDateFrom" onchange="renderLogsTable()" title="من تاريخ" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;">
+              <input type="date" id="logDateTo"   onchange="renderLogsTable()" title="إلى تاريخ" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;">
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);white-space:nowrap;" onclick="exportLogs()">📥 تصدير CSV</button>
+              <button class="btn btn-sm btn-danger" onclick="confirmClearLogs()" style="white-space:nowrap;">🗑️ مسح السجل</button>
+            </div>
+          </div>
+          <div id="logCount" style="font-size:0.82rem;color:var(--text-muted);margin-bottom:12px;"></div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>المستخدم</th><th>الاسم الكامل</th><th>الدور</th><th>نوع الإجراء</th><th>التفاصيل</th><th>التاريخ والوقت</th></tr>
+                </thead>
+                <tbody id="logsBody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -263,6 +320,48 @@
   </div>
 </div>
 
+<!-- Admin User Modal -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="adminModalTitle">إضافة مستخدم</h3><button class="modal-close" onclick="closeModal('adminModal')">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="adminUserId">
+      <div class="form-group">
+        <label class="form-label">الاسم الكامل <span>*</span></label>
+        <input type="text" class="form-control" id="adminFullName" placeholder="مثال: أحمد محمد علي">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">اسم المستخدم <span>*</span></label>
+          <input type="text" class="form-control" id="adminUsername" placeholder="ahmed.ali" dir="ltr">
+        </div>
+        <div class="form-group">
+          <label class="form-label">الدور <span>*</span></label>
+          <select class="form-control" id="adminRole">
+            <option value="admin">مسؤول (Admin)</option>
+            <option value="superadmin">مدير عام (Super Admin)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">كلمة المرور <span id="passRequired">*</span></label>
+          <input type="password" class="form-control" id="adminPassword" placeholder="••••••••" dir="ltr">
+        </div>
+        <div class="form-group">
+          <label class="form-label">تأكيد كلمة المرور</label>
+          <input type="password" class="form-control" id="adminPasswordConfirm" placeholder="••••••••" dir="ltr">
+        </div>
+      </div>
+      <p id="editPassNote" class="form-hint" style="display:none;">اتركها فارغة إذا لا تريد تغيير كلمة المرور</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('adminModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveAdminUser()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
 <!-- Delete Confirm Modal -->
 <div class="modal-overlay" id="deleteModal">
   <div class="modal" style="max-width:400px;">
@@ -283,21 +382,52 @@ let pendingDelete = null;
 
 // ===================== AUTH =====================
 function doLogin() {
-  const u = document.getElementById('loginUser').value;
+  const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
-  if (adminLogin(u, p)) {
+  const admin = adminLogin(u, p);
+  if (admin) {
+    document.getElementById('loginError').style.display = 'none';
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('adminPage').style.display = 'block';
     initAdmin();
   } else {
     document.getElementById('loginError').style.display = 'flex';
+    document.getElementById('loginPass').value = '';
   }
 }
-function doLogout() { adminLogout(); document.getElementById('adminPage').style.display = 'none'; document.getElementById('loginPage').style.display = 'flex'; }
-function checkAuth() { if (isAdminLoggedIn()) { document.getElementById('loginPage').style.display = 'none'; document.getElementById('adminPage').style.display = 'block'; initAdmin(); } }
+
+function doLogout() {
+  adminLogout();
+  document.getElementById('adminPage').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+function checkAuth() {
+  if (isAdminLoggedIn()) {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('adminPage').style.display = 'block';
+    initAdmin();
+  }
+}
 
 // ===================== INIT =====================
 function initAdmin() {
+  const admin = getCurrentAdmin();
+  if (!admin) return;
+
+  // Topbar user info
+  document.getElementById('topbarName').textContent = admin.fullName;
+  const roleEl = document.getElementById('topbarRole');
+  roleEl.textContent = admin.role === 'superadmin' ? 'مدير عام' : 'مسؤول';
+  roleEl.className = 'role-badge ' + (admin.role === 'superadmin' ? 'role-superadmin' : 'role-admin');
+
+  // Show superadmin-only sidebar items
+  if (admin.role === 'superadmin') {
+    document.querySelectorAll('.superadmin-only').forEach(el => el.style.display = '');
+  }
+
   renderDashboard();
   renderClinicsTable();
   renderDoctorsTable();
@@ -305,18 +435,26 @@ function initAdmin() {
   renderSlotsTable();
   renderBookingsTable();
   renderBookingFilters();
+  if (admin.role === 'superadmin') {
+    renderAdminsTable();
+    populateLogUserFilter();
+    renderLogsTable();
+  }
 }
 
 function showSection(name) {
   document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
-  const titles = { dashboard:'لوحة التحكم', clinics:'إدارة العيادات', doctors:'إدارة الأطباء', slots:'إدارة المواعيد', bookings:'الحجوزات' };
+  const navEl = document.getElementById('nav-' + name);
+  if (navEl) navEl.classList.add('active');
+  const titles = { dashboard:'لوحة التحكم', clinics:'إدارة العيادات', doctors:'إدارة الأطباء', slots:'إدارة المواعيد', bookings:'الحجوزات', admins:'إدارة المستخدمين', logs:'سجل النشاط' };
   document.getElementById('pageTitle').textContent = titles[name] || name;
   if (name === 'doctors')   { populateDoctorClinicFilter(); renderDoctorsTable(); }
   if (name === 'slots')     { populateSlotFilters(); renderSlotsTable(); }
   if (name === 'dashboard') renderDashboard();
+  if (name === 'admins')    renderAdminsTable();
+  if (name === 'logs')      { populateLogUserFilter(); renderLogsTable(); }
   return false;
 }
 
@@ -327,28 +465,23 @@ function renderDashboard() {
   const bookings = getBookings();
   const pending  = bookings.filter(b => b.status === 'pending').length;
 
-  const stats = [
-    { icon:'🏥', num:clinics.length,  label:'عيادة نشطة',       bg:'#e3f0ff', color:'#1565c0' },
-    { icon:'👨‍⚕️', num:doctors.length,  label:'طبيب متخصص',       bg:'#e0f2f1', color:'#00897b' },
-    { icon:'📋', num:bookings.length, label:'إجمالي الحجوزات',  bg:'#fff3e0', color:'#e65100' },
-    { icon:'⏳', num:pending,         label:'قيد الانتظار',      bg:'#fff8e1', color:'#f9a825' },
-  ];
-  document.getElementById('dashStats').innerHTML = stats.map(s => `
-    <div class="stat-card">
-      <div class="stat-card-icon" style="background:${s.bg};color:${s.color};">${s.icon}</div>
-      <div><div class="stat-card-num">${s.num}</div><div class="stat-card-label">${s.label}</div></div>
-    </div>`).join('');
+  document.getElementById('dashStats').innerHTML = [
+    { icon:'🏥', num:clinics.length,  label:'عيادة نشطة',      bg:'#e3f0ff', color:'#1565c0' },
+    { icon:'👨‍⚕️', num:doctors.length,  label:'طبيب متخصص',      bg:'#e0f2f1', color:'#00897b' },
+    { icon:'📋', num:bookings.length, label:'إجمالي الحجوزات', bg:'#fff3e0', color:'#e65100' },
+    { icon:'⏳', num:pending,         label:'قيد الانتظار',     bg:'#fff8e1', color:'#f9a825' },
+  ].map(s => `<div class="stat-card">
+    <div class="stat-card-icon" style="background:${s.bg};color:${s.color};">${s.icon}</div>
+    <div><div class="stat-card-num">${s.num}</div><div class="stat-card-label">${s.label}</div></div>
+  </div>`).join('');
 
   const recent = [...bookings].reverse().slice(0, 5);
   document.getElementById('recentBookings').innerHTML = recent.length === 0
     ? '<p style="padding:20px;text-align:center;color:var(--text-muted);">لا توجد حجوزات بعد</p>'
     : '<table style="width:100%"><thead><tr><th>رقم الحجز</th><th>المريض</th><th>العيادة</th><th>الحالة</th></tr></thead><tbody>'
-      + recent.map(b => {
-          const st = getStatusBadge(b.status);
-          return `<tr><td><strong>${b.id}</strong></td><td style="font-size:0.82rem;">${b.patientName}</td><td style="font-size:0.82rem;">${b.clinicName||''}</td><td><span class="badge ${st.cls}">${st.label}</span></td></tr>`;
-        }).join('') + '</tbody></table>';
+      + recent.map(b => { const st = getStatusBadge(b.status); return `<tr><td><strong>${b.id}</strong></td><td style="font-size:0.82rem;">${b.patientName}</td><td style="font-size:0.82rem;">${b.clinicName||''}</td><td><span class="badge ${st.cls}">${st.label}</span></td></tr>`; }).join('')
+      + '</tbody></table>';
 
-  // Booking status breakdown
   const statusCounts = { pending:0, confirmed:0, cancelled:0, completed:0 };
   bookings.forEach(b => { const k = b.status || 'pending'; if (statusCounts[k] !== undefined) statusCounts[k]++; });
   const statusLabels = { pending:'⏳ قيد الانتظار', confirmed:'✅ مؤكد', cancelled:'❌ ملغي', completed:'🏁 مكتمل' };
@@ -364,7 +497,7 @@ function renderDashboard() {
 }
 
 // ===================== CLINICS =====================
-function renderClinicsTable(search = '') {
+function renderClinicsTable(search='') {
   const clinics = getClinics().filter(c => !search || c.name.includes(search));
   document.getElementById('clinicsBody').innerHTML = clinics.length === 0
     ? '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد عيادات</td></tr>'
@@ -388,7 +521,7 @@ function renderClinicsTable(search = '') {
 function openClinicModal(id=null) {
   document.getElementById('clinicModalTitle').textContent = id ? 'تعديل العيادة' : 'إضافة عيادة جديدة';
   document.getElementById('clinicId').value = id||'';
-  ['clinicName','clinicDesc','clinicIcon'].forEach(i=>document.getElementById(i).value='');
+  ['clinicName','clinicDesc','clinicIcon'].forEach(i => document.getElementById(i).value='');
   document.getElementById('clinicPrice').value='';
   document.getElementById('clinicColor').value='#3498db';
   renderColorPicker('#3498db');
@@ -401,27 +534,27 @@ function renderColorPicker(selected) {
 }
 function selectColor(c) { document.getElementById('clinicColor').value=c; renderColorPicker(c); }
 function saveClinic() {
-  const name=document.getElementById('clinicName').value.trim();
-  const price=parseFloat(document.getElementById('clinicPrice').value);
-  if(!name){showToast('اسم العيادة مطلوب','error');return;}
-  if(!price||price<0){showToast('من فضلك أدخل سعراً صحيحاً','error');return;}
-  const data={name,price,description:document.getElementById('clinicDesc').value.trim(),icon:document.getElementById('clinicIcon').value.trim()||'🏥',color:document.getElementById('clinicColor').value,active:true};
-  const id=document.getElementById('clinicId').value;
-  if(id) updateClinic(id,data); else addClinic(data);
+  const name  = document.getElementById('clinicName').value.trim();
+  const price = parseFloat(document.getElementById('clinicPrice').value);
+  if (!name)          { showToast('اسم العيادة مطلوب','error'); return; }
+  if (!price||price<0){ showToast('من فضلك أدخل سعراً صحيحاً','error'); return; }
+  const data = { name, price, description:document.getElementById('clinicDesc').value.trim(), icon:document.getElementById('clinicIcon').value.trim()||'🏥', color:document.getElementById('clinicColor').value, active:true };
+  const id = document.getElementById('clinicId').value;
+  if (id) { updateClinic(id,data); addLog('clinic_edit',`تعديل عيادة: ${name}`); }
+  else    { addClinic(data);        addLog('clinic_add', `إضافة عيادة جديدة: ${name}`); }
   closeModal('clinicModal'); renderClinicsTable(); renderDashboard(); showToast(id?'تم تحديث العيادة':'تمت إضافة العيادة');
 }
 
 // ===================== DOCTORS =====================
 function populateDoctorClinicFilter() {
-  const sel=document.getElementById('doctorClinicFilter');
-  sel.innerHTML='<option value="">كل العيادات</option>'+getClinics().filter(c=>c.active).map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  document.getElementById('doctorClinicFilter').innerHTML = '<option value="">كل العيادات</option>' + getClinics().filter(c=>c.active).map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
 }
 function renderDoctorsTable(search='') {
-  const cf=document.getElementById('doctorClinicFilter')?.value||'';
-  const doctors=getDoctors().filter(d=>(!search||d.name.includes(search)||d.title.includes(search))&&(!cf||d.clinicId===cf));
-  document.getElementById('doctorsBody').innerHTML=doctors.length===0
-    ?'<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);">لا يوجد أطباء</td></tr>'
-    :doctors.map(d=>{const cl=getClinic(d.clinicId);return`<tr>
+  const cf = document.getElementById('doctorClinicFilter')?.value||'';
+  const doctors = getDoctors().filter(d=>(!search||d.name.includes(search)||d.title.includes(search))&&(!cf||d.clinicId===cf));
+  document.getElementById('doctorsBody').innerHTML = doctors.length===0
+    ? '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);">لا يوجد أطباء</td></tr>'
+    : doctors.map(d=>{const cl=getClinic(d.clinicId);return`<tr>
       <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;">👨‍⚕️</div><strong>${d.name}</strong></div></td>
       <td style="font-size:0.85rem;">${d.title}</td>
       <td><span class="badge badge-primary">${cl?cl.name:'-'}</span></td>
@@ -431,86 +564,88 @@ function renderDoctorsTable(search='') {
     </tr>`}).join('');
 }
 function openDoctorModal(id=null) {
-  document.getElementById('doctorModalTitle').textContent=id?'تعديل بيانات الطبيب':'إضافة طبيب جديد';
-  document.getElementById('doctorId').value=id||'';
+  document.getElementById('doctorModalTitle').textContent = id?'تعديل بيانات الطبيب':'إضافة طبيب جديد';
+  document.getElementById('doctorId').value = id||'';
   ['doctorName','doctorTitle','doctorExp'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('doctorClinicId').innerHTML=getClinics().filter(c=>c.active).map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  document.getElementById('doctorClinicId').innerHTML = getClinics().filter(c=>c.active).map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
   if(id){const d=getDoctor(id);if(d){document.getElementById('doctorName').value=d.name;document.getElementById('doctorTitle').value=d.title;document.getElementById('doctorExp').value=d.experience||'';document.getElementById('doctorClinicId').value=d.clinicId;}}
   openModal('doctorModal');
 }
 function editDoctor(id){openDoctorModal(id);}
 function saveDoctor() {
-  const name=document.getElementById('doctorName').value.trim();
-  const title=document.getElementById('doctorTitle').value.trim();
-  const clinicId=document.getElementById('doctorClinicId').value;
-  if(!name){showToast('اسم الطبيب مطلوب','error');return;}
-  if(!title){showToast('التخصص مطلوب','error');return;}
-  const data={name,title,clinicId,experience:document.getElementById('doctorExp').value.trim(),active:true};
-  const id=document.getElementById('doctorId').value;
-  if(id) updateDoctor(id,data); else addDoctor(data);
+  const name    = document.getElementById('doctorName').value.trim();
+  const title   = document.getElementById('doctorTitle').value.trim();
+  const clinicId= document.getElementById('doctorClinicId').value;
+  if(!name) { showToast('اسم الطبيب مطلوب','error'); return; }
+  if(!title){ showToast('التخصص مطلوب','error'); return; }
+  const data = {name,title,clinicId,experience:document.getElementById('doctorExp').value.trim(),active:true};
+  const id = document.getElementById('doctorId').value;
+  if(id) { updateDoctor(id,data); addLog('doctor_edit',`تعديل بيانات الطبيب: ${name}`); }
+  else   { addDoctor(data);       addLog('doctor_add', `إضافة طبيب جديد: ${name}`); }
   closeModal('doctorModal'); renderDoctorsTable(); showToast(id?'تم تحديث بيانات الطبيب':'تمت إضافة الطبيب');
 }
 
 // ===================== SLOTS =====================
-function populateAllFilters(){populateSlotFilters();populateDoctorClinicFilter();}
-function populateSlotFilters(){
-  const clinics=getClinics().filter(c=>c.active);
-  const opts='<option value="">كل العيادات</option>'+clinics.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  document.getElementById('slotClinicFilter').innerHTML=opts;
-  document.getElementById('slotClinicId')&&(document.getElementById('slotClinicId').innerHTML=opts);
+function populateAllFilters(){ populateSlotFilters(); populateDoctorClinicFilter(); }
+function populateSlotFilters() {
+  const opts = '<option value="">كل العيادات</option>' + getClinics().filter(c=>c.active).map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  document.getElementById('slotClinicFilter').innerHTML = opts;
+  if (document.getElementById('slotClinicId')) document.getElementById('slotClinicId').innerHTML = opts;
 }
-function onSlotClinicChange(){
-  const cid=document.getElementById('slotClinicFilter').value;
-  const docs=cid?getDoctors().filter(d=>d.clinicId===cid&&d.active):getDoctors().filter(d=>d.active);
-  document.getElementById('slotDoctorFilter').innerHTML='<option value="">كل الأطباء</option>'+docs.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+function onSlotClinicChange() {
+  const cid = document.getElementById('slotClinicFilter').value;
+  const docs = cid ? getDoctors().filter(d=>d.clinicId===cid&&d.active) : getDoctors().filter(d=>d.active);
+  document.getElementById('slotDoctorFilter').innerHTML = '<option value="">كل الأطباء</option>' + docs.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
   renderSlotsTable();
 }
-function populateSlotDoctors(){
-  const cid=document.getElementById('slotClinicId').value;
-  document.getElementById('slotDoctorId').innerHTML=getDoctors().filter(d=>d.clinicId===cid&&d.active).map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+function populateSlotDoctors() {
+  const cid = document.getElementById('slotClinicId').value;
+  document.getElementById('slotDoctorId').innerHTML = getDoctors().filter(d=>d.clinicId===cid&&d.active).map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
 }
-function renderSlotsTable(){
-  const cid=document.getElementById('slotClinicFilter')?.value||'';
-  const did=document.getElementById('slotDoctorFilter')?.value||'';
-  const today=new Date().toISOString().split('T')[0];
-  const slots=getSlots().filter(s=>(!cid||s.clinicId===cid)&&(!did||s.doctorId===did)).sort((a,b)=>a.date.localeCompare(b.date));
-  document.getElementById('slotsBody').innerHTML=slots.length===0
-    ?'<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد مواعيد</td></tr>'
-    :slots.map(s=>{const doc=getDoctor(s.doctorId);const cl=getClinic(s.clinicId);const past=s.date<today;return`<tr style="${past?'opacity:0.55;':''}">
+function renderSlotsTable() {
+  const cid   = document.getElementById('slotClinicFilter')?.value||'';
+  const did   = document.getElementById('slotDoctorFilter')?.value||'';
+  const today = new Date().toISOString().split('T')[0];
+  const slots = getSlots().filter(s=>(!cid||s.clinicId===cid)&&(!did||s.doctorId===did)).sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById('slotsBody').innerHTML = slots.length===0
+    ? '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد مواعيد</td></tr>'
+    : slots.map(s=>{const doc=getDoctor(s.doctorId);const cl=getClinic(s.clinicId);const past=s.date<today;return`<tr style="${past?'opacity:0.55;':''}">
       <td style="font-size:0.85rem;">${s.date}</td><td style="font-size:0.82rem;">${s.dayName||''}</td><td><strong>${s.time}</strong></td>
       <td style="font-size:0.82rem;">${doc?doc.name:'-'}</td><td style="font-size:0.78rem;color:var(--text-muted);">${cl?cl.name:'-'}</td>
       <td><span class="badge ${s.bookedCount>=s.maxPatients?'badge-danger':'badge-success'}">${s.bookedCount}/${s.maxPatients}</span></td>
       <td><span class="badge ${s.active&&!past?'badge-success':'badge-secondary'}">${past?'منتهي':s.active?'متاح':'معطل'}</span></td>
-      <td><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-outline-primary" onclick="editSlot('${s.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="confirmDelete('slot','${s.id}','موعد ${s.time}')">🗑️</button></div></td>
+      <td><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-outline-primary" onclick="editSlot('${s.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="confirmDelete('slot','${s.id}','موعد ${s.time} - ${s.date}')">🗑️</button></div></td>
     </tr>`}).join('');
 }
-function openSlotModal(id=null){
-  document.getElementById('slotModalTitle').textContent=id?'تعديل الموعد':'إضافة موعد جديد';
-  document.getElementById('slotId').value=id||'';
-  const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);
-  document.getElementById('slotDate').value=tomorrow.toISOString().split('T')[0];
-  document.getElementById('slotMax').value=5;
-  const clinics=getClinics().filter(c=>c.active);
-  document.getElementById('slotClinicId').innerHTML=clinics.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  if(clinics.length>0)populateSlotDoctors();
+function openSlotModal(id=null) {
+  document.getElementById('slotModalTitle').textContent = id?'تعديل الموعد':'إضافة موعد جديد';
+  document.getElementById('slotId').value = id||'';
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+  document.getElementById('slotDate').value = tomorrow.toISOString().split('T')[0];
+  document.getElementById('slotMax').value = 5;
+  const clinics = getClinics().filter(c=>c.active);
+  document.getElementById('slotClinicId').innerHTML = clinics.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  if(clinics.length>0) populateSlotDoctors();
   if(id){const s=getSlot(id);if(s){document.getElementById('slotDate').value=s.date;document.getElementById('slotTime').value=s.time;document.getElementById('slotMax').value=s.maxPatients;document.getElementById('slotClinicId').value=s.clinicId;populateSlotDoctors();setTimeout(()=>{document.getElementById('slotDoctorId').value=s.doctorId;},0);}}
   openModal('slotModal');
 }
 function editSlot(id){openSlotModal(id);}
-function saveSlot(){
-  const cid=document.getElementById('slotClinicId').value;
-  const did=document.getElementById('slotDoctorId').value;
-  const date=document.getElementById('slotDate').value;
-  const time=document.getElementById('slotTime').value;
-  const max=parseInt(document.getElementById('slotMax').value);
-  if(!cid||!did){showToast('اختر العيادة والطبيب','error');return;}
-  if(!date){showToast('التاريخ مطلوب','error');return;}
-  const dayNames=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-  const d=new Date(date+'T00:00:00');
-  const data={clinicId:cid,doctorId:did,date,dayName:dayNames[d.getDay()],time,maxPatients:max||5};
-  const id=document.getElementById('slotId').value;
-  if(id)updateSlot(id,data);else addSlot(data);
-  closeModal('slotModal');renderSlotsTable();showToast(id?'تم تحديث الموعد':'تمت إضافة الموعد');
+function saveSlot() {
+  const cid  = document.getElementById('slotClinicId').value;
+  const did  = document.getElementById('slotDoctorId').value;
+  const date = document.getElementById('slotDate').value;
+  const time = document.getElementById('slotTime').value;
+  const max  = parseInt(document.getElementById('slotMax').value);
+  if(!cid||!did){ showToast('اختر العيادة والطبيب','error'); return; }
+  if(!date)      { showToast('التاريخ مطلوب','error'); return; }
+  const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const d = new Date(date+'T00:00:00');
+  const data = { clinicId:cid, doctorId:did, date, dayName:dayNames[d.getDay()], time, maxPatients:max||5 };
+  const id  = document.getElementById('slotId').value;
+  const doc = getDoctor(did);
+  if(id){ updateSlot(id,data); addLog('slot_edit',`تعديل موعد: ${date} ${time}${doc?' - '+doc.name:''}`); }
+  else  { addSlot(data);       addLog('slot_add', `إضافة موعد: ${date} ${time}${doc?' - '+doc.name:''}`); }
+  closeModal('slotModal'); renderSlotsTable(); showToast(id?'تم تحديث الموعد':'تمت إضافة الموعد');
 }
 
 // ===================== BOOKINGS =====================
@@ -521,12 +656,11 @@ function renderBookingFilters() {
 function setBookingFilter(s) { bookingStatusFilter=s; renderBookingFilters(); renderBookingsTable(); }
 
 function renderBookingsTable(search='') {
-  let bookings = getBookings().filter(b =>
+  const bookings = getBookings().filter(b =>
     (bookingStatusFilter==='all'||b.status===bookingStatusFilter) &&
     (!search || b.patientName.includes(search) || b.id.includes(search) || (b.phone||'').includes(search))
   ).reverse();
-
-  document.getElementById('bookingsBody').innerHTML = bookings.length === 0
+  document.getElementById('bookingsBody').innerHTML = bookings.length===0
     ? '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد حجوزات</td></tr>'
     : bookings.map(b => {
         const st = getStatusBadge(b.status);
@@ -537,50 +671,201 @@ function renderBookingsTable(search='') {
           <td style="font-size:0.82rem;">${b.date}<br><span style="color:var(--text-muted);font-size:0.75rem;">${b.time||''}</span></td>
           <td style="font-size:0.9rem;font-weight:900;color:var(--primary);">${b.amount||0} ج</td>
           <td>
-            <select class="status-select" onchange="updateBookingStatus('${b.id}','status',this.value)">
+            <select class="status-select" onchange="updateBookingStatus('${b.id}',this.value)">
               <option value="pending"   ${b.status==='pending'   ?'selected':''}>قيد الانتظار</option>
               <option value="confirmed" ${b.status==='confirmed' ?'selected':''}>مؤكد</option>
               <option value="cancelled" ${b.status==='cancelled' ?'selected':''}>ملغي</option>
               <option value="completed" ${b.status==='completed' ?'selected':''}>مكتمل</option>
             </select>
           </td>
-          <td>
-            <div style="display:flex;gap:4px;">
-              ${b.status!=='confirmed'?`<button class="btn btn-success btn-sm" onclick="quickConfirm('${b.id}')" title="تأكيد">✓</button>`:''}
-              ${b.status!=='cancelled'?`<button class="btn btn-danger btn-sm" onclick="quickCancel('${b.id}')"  title="إلغاء">✕</button>`:''}
-            </div>
-          </td>
+          <td><div style="display:flex;gap:4px;">
+            ${b.status!=='confirmed'?`<button class="btn btn-success btn-sm" onclick="quickConfirm('${b.id}')" title="تأكيد">✓</button>`:''}
+            ${b.status!=='cancelled'?`<button class="btn btn-danger btn-sm"  onclick="quickCancel('${b.id}')"  title="إلغاء">✕</button>`:''}
+          </div></td>
         </tr>`;
       }).join('');
 }
 
-function updateBookingStatus(id,field,value) { const d={};d[field]=value;updateBooking(id,d);renderBookingsTable();renderDashboard();showToast('تم تحديث حالة الحجز'); }
-function quickConfirm(id) { updateBooking(id,{status:'confirmed'});renderBookingsTable();renderDashboard();showToast('تم تأكيد الحجز'); }
-function quickCancel(id)  { updateBooking(id,{status:'cancelled'});renderBookingsTable();renderDashboard();showToast('تم إلغاء الحجز','error'); }
-
+function updateBookingStatus(id, value) {
+  const b = getBooking(id);
+  const labels = { pending:'قيد الانتظار', confirmed:'مؤكد', cancelled:'ملغي', completed:'مكتمل' };
+  updateBooking(id, {status:value});
+  addLog('booking_status', `تغيير حالة الحجز ${id} إلى "${labels[value]||value}"${b?' ('+b.patientName+')':''}`);
+  renderBookingsTable(); renderDashboard(); showToast('تم تحديث حالة الحجز');
+}
+function quickConfirm(id) {
+  const b = getBooking(id);
+  updateBooking(id,{status:'confirmed'});
+  addLog('booking_status', `تأكيد الحجز: ${id}${b?' ('+b.patientName+')':''}`);
+  renderBookingsTable(); renderDashboard(); showToast('تم تأكيد الحجز');
+}
+function quickCancel(id) {
+  const b = getBooking(id);
+  updateBooking(id,{status:'cancelled'});
+  addLog('booking_status', `إلغاء الحجز: ${id}${b?' ('+b.patientName+')':''}`);
+  renderBookingsTable(); renderDashboard(); showToast('تم إلغاء الحجز','error');
+}
 function exportBookings() {
   const bookings = getBookings();
-  const header   = 'رقم الحجز,اسم المريض,الهاتف,الرقم القومي,العيادة,الطبيب,التاريخ,الوقت,سعر الكشف,حالة الحجز\n';
-  const rows = bookings.map(b => [
-    b.id, b.patientName, b.phone||'', b.nationalId||'',
-    b.clinicName, b.doctorName, b.date||'', b.time||'',
-    b.amount||0, b.status
-  ].join(',')).join('\n');
-  const blob = new Blob(['﻿' + header + rows], { type:'text/csv;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'bookings_' + new Date().toISOString().split('T')[0] + '.csv';
-  a.click();
+  const header = 'رقم الحجز,اسم المريض,الهاتف,الرقم القومي,العيادة,الطبيب,التاريخ,الوقت,سعر الكشف,حالة الحجز\n';
+  const rows = bookings.map(b=>[b.id,b.patientName,b.phone||'',b.nationalId||'',b.clinicName,b.doctorName,b.date||'',b.time||'',b.amount||0,b.status].join(',')).join('\n');
+  const blob = new Blob(['﻿'+header+rows],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='bookings_'+new Date().toISOString().split('T')[0]+'.csv'; a.click();
+  addLog('booking_export','تصدير بيانات الحجوزات CSV');
   showToast('تم تصدير الملف بنجاح');
 }
 
+// ===================== ADMIN USERS =====================
+function renderAdminsTable(search='') {
+  const currentId = getCurrentAdmin()?.id;
+  const admins = getAdmins().filter(a => !search || a.fullName.includes(search) || a.username.includes(search));
+  document.getElementById('adminsBody').innerHTML = admins.length===0
+    ? '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);">لا يوجد مستخدمون</td></tr>'
+    : admins.map(a => `<tr>
+        <td><strong>${a.fullName}</strong></td>
+        <td style="font-size:0.85rem;direction:ltr;text-align:right;">${a.username}</td>
+        <td><span class="role-badge ${a.role==='superadmin'?'role-superadmin':'role-admin'}">${a.role==='superadmin'?'مدير عام':'مسؤول'}</span></td>
+        <td><span class="badge ${a.active?'badge-success':'badge-danger'}">${a.active?'نشط':'معطل'}</span></td>
+        <td style="font-size:0.8rem;color:var(--text-muted);">${a.createdAt?new Date(a.createdAt).toLocaleDateString('ar-EG'):'—'}</td>
+        <td><div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-sm btn-outline-primary" onclick="editAdminUser('${a.id}')">✏️ تعديل</button>
+          ${a.id!==currentId?`<button class="btn btn-sm ${a.active?'btn-danger':'btn-success'}" onclick="toggleAdminActive('${a.id}',${!a.active})">${a.active?'🚫 تعطيل':'✓ تفعيل'}</button>`:'<span style="font-size:0.75rem;color:var(--text-muted);padding:4px 8px;">(حسابك)</span>'}
+          ${a.id!==currentId&&a.role!=='superadmin'?`<button class="btn btn-sm btn-danger" onclick="confirmDelete('admin_user','${a.id}','${a.fullName}')">🗑️</button>`:''}
+        </div></td>
+      </tr>`).join('');
+}
+
+function openAdminModal(id=null) {
+  document.getElementById('adminModalTitle').textContent = id?'تعديل مستخدم':'إضافة مستخدم جديد';
+  document.getElementById('adminUserId').value = id||'';
+  document.getElementById('adminFullName').value = '';
+  document.getElementById('adminUsername').value = '';
+  document.getElementById('adminPassword').value = '';
+  document.getElementById('adminPasswordConfirm').value = '';
+  document.getElementById('adminRole').value = 'admin';
+  document.getElementById('passRequired').textContent = id?'':'*';
+  document.getElementById('editPassNote').style.display = id?'block':'none';
+  if (id) { const a=getAdmin(id); if(a){document.getElementById('adminFullName').value=a.fullName;document.getElementById('adminUsername').value=a.username;document.getElementById('adminRole').value=a.role;} }
+  openModal('adminModal');
+}
+function editAdminUser(id){openAdminModal(id);}
+
+function toggleAdminActive(id, active) {
+  const a = getAdmin(id);
+  updateAdmin(id,{active});
+  addLog('admin_edit',`${active?'تفعيل':'تعطيل'} حساب المستخدم: ${a?.fullName||id}`);
+  renderAdminsTable();
+  showToast(active?'تم تفعيل الحساب':'تم تعطيل الحساب', active?'success':'error');
+}
+
+function saveAdminUser() {
+  const id       = document.getElementById('adminUserId').value;
+  const fullName = document.getElementById('adminFullName').value.trim();
+  const username = document.getElementById('adminUsername').value.trim();
+  const password = document.getElementById('adminPassword').value;
+  const confirm  = document.getElementById('adminPasswordConfirm').value;
+  const role     = document.getElementById('adminRole').value;
+
+  if (!fullName)                          { showToast('الاسم الكامل مطلوب','error'); return; }
+  if (!username)                          { showToast('اسم المستخدم مطلوب','error'); return; }
+  if (!id && !password)                   { showToast('كلمة المرور مطلوبة','error'); return; }
+  if (password && password.length < 6)   { showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل','error'); return; }
+  if (password && password !== confirm)   { showToast('كلمتا المرور غير متطابقتين','error'); return; }
+
+  const existing = getAdminByUsername(username);
+  if (existing && existing.id !== id)     { showToast('اسم المستخدم مستخدم بالفعل','error'); return; }
+
+  const data = { fullName, username, role };
+  if (password) data.password = password;
+
+  if (id) { updateAdmin(id,data); addLog('admin_edit',`تعديل بيانات المستخدم: ${fullName} (${username})`); showToast('تم تحديث بيانات المستخدم'); }
+  else    { addAdmin(data);       addLog('admin_add', `إضافة مستخدم جديد: ${fullName} (${username}) - الدور: ${role==='superadmin'?'مدير عام':'مسؤول'}`); showToast('تمت إضافة المستخدم'); }
+  closeModal('adminModal');
+  renderAdminsTable();
+}
+
+// ===================== ACTIVITY LOG =====================
+const ACTION_LABELS = {
+  login:'تسجيل دخول', logout:'تسجيل خروج',
+  clinic_add:'إضافة عيادة',   clinic_edit:'تعديل عيادة',   clinic_delete:'حذف عيادة',
+  doctor_add:'إضافة طبيب',   doctor_edit:'تعديل طبيب',   doctor_delete:'حذف طبيب',
+  slot_add:'إضافة موعد',     slot_edit:'تعديل موعد',     slot_delete:'حذف موعد',
+  booking_status:'تغيير حالة حجز', booking_export:'تصدير حجوزات',
+  admin_add:'إضافة مستخدم',  admin_edit:'تعديل مستخدم',  admin_delete:'حذف مستخدم'
+};
+
+function populateLogUserFilter() {
+  const sel = document.getElementById('logUserFilter');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">👤 كل المستخدمين</option>' +
+    getAdmins().map(a=>`<option value="${a.username}">${a.fullName} (${a.username})</option>`).join('');
+}
+
+function renderLogsTable() {
+  const userFilter   = document.getElementById('logUserFilter')?.value   || '';
+  const actionFilter = document.getElementById('logActionFilter')?.value || '';
+  const dateFrom     = document.getElementById('logDateFrom')?.value     || '';
+  const dateTo       = document.getElementById('logDateTo')?.value       || '';
+
+  const all = getLogs();
+  const filtered = all.filter(l => {
+    const logDate = l.timestamp ? l.timestamp.split('T')[0] : '';
+    return (!userFilter   || l.username === userFilter) &&
+           (!actionFilter || l.actionType.startsWith(actionFilter)) &&
+           (!dateFrom     || logDate >= dateFrom) &&
+           (!dateTo       || logDate <= dateTo);
+  }).reverse();
+
+  const countEl = document.getElementById('logCount');
+  if (countEl) countEl.textContent = `إجمالي السجلات: ${all.length} · المعروض: ${filtered.length}`;
+
+  document.getElementById('logsBody').innerHTML = filtered.length===0
+    ? '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد سجلات بهذه المعايير</td></tr>'
+    : filtered.map((l,i) => {
+        const dt = l.timestamp ? new Date(l.timestamp) : null;
+        const dateStr = dt ? dt.toLocaleDateString('ar-EG') : '—';
+        const timeStr = dt ? dt.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '';
+        return `<tr>
+          <td style="color:var(--text-muted);font-size:0.78rem;">${filtered.length-i}</td>
+          <td style="font-size:0.85rem;direction:ltr;text-align:right;font-weight:700;">${l.username||'—'}</td>
+          <td style="font-size:0.85rem;">${l.fullName||'—'}</td>
+          <td><span class="role-badge ${l.role==='superadmin'?'role-superadmin':'role-admin'}">${l.role==='superadmin'?'مدير عام':'مسؤول'}</span></td>
+          <td><span class="log-action-badge">${ACTION_LABELS[l.actionType]||l.actionType}</span></td>
+          <td style="font-size:0.82rem;color:var(--text-muted);max-width:260px;">${l.description||''}</td>
+          <td style="font-size:0.82rem;white-space:nowrap;">${dateStr}<br><span style="color:var(--text-muted);font-size:0.75rem;">${timeStr}</span></td>
+        </tr>`;
+      }).join('');
+}
+
+function exportLogs() {
+  const logs = getLogs();
+  const header = 'رقم,اسم المستخدم,الاسم الكامل,الدور,نوع الإجراء,التفاصيل,التاريخ,الوقت\n';
+  const rows = logs.map((l,i) => {
+    const dt = l.timestamp ? new Date(l.timestamp) : null;
+    return [i+1, l.username, l.fullName||'', l.role||'', ACTION_LABELS[l.actionType]||l.actionType, (l.description||'').replace(/,/g,'؛'), dt?dt.toLocaleDateString('ar-EG'):'', dt?dt.toLocaleTimeString('ar-EG'):''].join(',');
+  }).join('\n');
+  const blob = new Blob(['﻿'+header+rows],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='activity_log_'+new Date().toISOString().split('T')[0]+'.csv'; a.click();
+  showToast('تم تصدير سجل النشاط');
+}
+
+function confirmClearLogs() {
+  if (confirm('هل أنت متأكد من مسح جميع سجلات النشاط؟ لا يمكن التراجع عن هذا الإجراء.')) {
+    saveLogs([]);
+    addLog('admin_edit','مسح سجلات النشاط بالكامل');
+    renderLogsTable();
+    showToast('تم مسح السجل');
+  }
+}
+
 // ===================== DELETE =====================
-function confirmDelete(type,id,name) {
-  pendingDelete={type,id};
+function confirmDelete(type, id, name) {
+  pendingDelete = {type, id, name};
   const msgs = {
-    clinic: `هل أنت متأكد من حذف عيادة "${name}"؟ سيتم حذف جميع الأطباء والمواعيد المرتبطة بها.`,
-    doctor: `هل أنت متأكد من حذف الطبيب "${name}"؟ سيتم حذف جميع مواعيده.`,
-    slot:   `هل أنت متأكد من حذف "${name}"؟`,
+    clinic:     `هل أنت متأكد من حذف عيادة "${name}"؟ سيتم حذف جميع الأطباء والمواعيد المرتبطة بها.`,
+    doctor:     `هل أنت متأكد من حذف الطبيب "${name}"؟ سيتم حذف جميع مواعيده.`,
+    slot:       `هل أنت متأكد من حذف "${name}"؟`,
+    admin_user: `هل أنت متأكد من حذف المستخدم "${name}"؟ لا يمكن التراجع عن هذا الإجراء.`,
   };
   document.getElementById('deleteMsg').textContent = msgs[type]||'هل أنت متأكد من الحذف؟';
   document.getElementById('deleteConfirmBtn').onclick = doDelete;
@@ -588,13 +873,15 @@ function confirmDelete(type,id,name) {
 }
 function doDelete() {
   if (!pendingDelete) return;
-  if (pendingDelete.type==='clinic') { deleteClinic(pendingDelete.id); renderClinicsTable(); }
-  if (pendingDelete.type==='doctor') { deleteDoctor(pendingDelete.id); renderDoctorsTable(); }
-  if (pendingDelete.type==='slot')   { deleteSlot(pendingDelete.id);   renderSlotsTable(); }
+  const {type, id, name} = pendingDelete;
+  if (type==='clinic')     { deleteClinic(id);  addLog('clinic_delete', `حذف عيادة: ${name}`);     renderClinicsTable(); }
+  if (type==='doctor')     { deleteDoctor(id);  addLog('doctor_delete', `حذف طبيب: ${name}`);      renderDoctorsTable(); }
+  if (type==='slot')       { deleteSlot(id);    addLog('slot_delete',   `حذف موعد: ${name}`);      renderSlotsTable(); }
+  if (type==='admin_user') { deleteAdmin(id);   addLog('admin_delete',  `حذف مستخدم: ${name}`);    renderAdminsTable(); }
   renderDashboard();
   closeModal('deleteModal');
   showToast('تم الحذف بنجاح');
-  pendingDelete=null;
+  pendingDelete = null;
 }
 
 // ===================== MODALS =====================
