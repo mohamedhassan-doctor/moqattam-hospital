@@ -744,7 +744,11 @@ function renderBookingsTable(search='') {
             <span style="font-weight:700;">${payIcon} ${payLabel}</span>
             ${payDetail ? `<br><span style="color:var(--text-muted);font-size:0.75rem;">${payDetail}</span>` : ''}
           </td>
-          <td style="font-size:0.9rem;font-weight:900;color:var(--primary);">${b.amount||0} ج</td>
+          <td style="font-size:0.9rem;font-weight:900;color:var(--primary);">
+            ${(b.paymentMethod==='insurance'||b.paymentMethod==='syndicate')
+              ? '<span style="font-size:0.8rem;font-weight:600;color:var(--text-muted);">يحدد عند الحضور</span>'
+              : `${b.amount||0} ج`}
+          </td>
           <td>
             <select class="status-select" onchange="updateBookingStatus('${b.id}',this.value)">
               <option value="pending"   ${b.status==='pending'   ?'selected':''}>قيد الانتظار</option>
@@ -783,7 +787,7 @@ function quickCancel(id) {
 function exportBookings() {
   const bookings = getBookings();
   const header = 'رقم الحجز,اسم المريض,الهاتف,الرقم القومي,العيادة,الطبيب,التاريخ,الوقت,طريقة الدفع,شركة التأمين/النقابة,سعر الكشف,حالة الحجز\n';
-  const rows = bookings.map(b=>[b.id,b.patientName,b.phone||'',b.nationalId||'',b.clinicName,b.doctorName,b.date||'',b.time||'',b.paymentLabel||'نقدي',(b.insuranceName||b.syndicateName||''),b.amount||0,b.status].join(',')).join('\n');
+  const rows = bookings.map(b=>[b.id,b.patientName,b.phone||'',b.nationalId||'',b.clinicName,b.doctorName,b.date||'',b.time||'',b.paymentLabel||'نقدي',(b.insuranceName||b.syndicateName||''),(b.paymentMethod==='insurance'||b.paymentMethod==='syndicate')?'يحدد عند الحضور':b.amount||0,b.status].join(',')).join('\n');
   const blob = new Blob(['﻿'+header+rows],{type:'text/csv;charset=utf-8'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='bookings_'+new Date().toISOString().split('T')[0]+'.csv'; a.click();
   addLog('booking_export','تصدير بيانات الحجوزات CSV');
