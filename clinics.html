@@ -45,7 +45,7 @@
   <div class="search-bar-inner">
     <div class="search-input-wrap">
       <span class="icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="ابحث عن عيادة أو تخصص..." oninput="filterClinics()">
+      <input type="text" id="searchInput" placeholder="ابحث باسم الطبيب أو التخصص..." oninput="filterClinics()">
     </div>
     <select class="form-control" id="sortSelect" style="width:180px;" onchange="filterClinics()">
       <option value="">الترتيب الافتراضي</option>
@@ -61,9 +61,9 @@
     <div id="clinicsCount" style="font-size:0.9rem;color:var(--text-muted);margin-bottom:20px;font-weight:600;"></div>
     <div class="clinics-grid" id="clinicsGrid"></div>
     <div id="noResults" class="empty-state" style="display:none;">
-      <span class="emoji">🔍</span>
-      <h3>لا توجد نتائج</h3>
-      <p>لم نجد عيادات مطابقة لبحثك. جرّب كلمات أخرى.</p>
+      <span class="emoji">😔</span>
+      <h3>لا توجد نتائج مطابقة</h3>
+      <p>لم نتمكن من إيجاد عيادة أو طبيب يطابق بحثك. حاول البحث بكلمات مختلفة مثل اسم التخصص أو اسم الطبيب.</p>
     </div>
   </div>
 </section>
@@ -87,16 +87,20 @@
   function filterClinics() {
     const q = document.getElementById('searchInput').value.trim().toLowerCase();
     const sort = document.getElementById('sortSelect').value;
-    let filtered = allClinics.filter(c =>
-      c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
-    );
+    let filtered = allClinics.filter(c => {
+      if (!q) return true;
+      if (c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)) return true;
+      return getDoctorsByClinic(c.id).some(d =>
+        d.name.toLowerCase().includes(q) || d.title.toLowerCase().includes(q)
+      );
+    });
     if (sort === 'price-asc') filtered.sort((a, b) => a.price - b.price);
     else if (sort === 'price-desc') filtered.sort((a, b) => b.price - a.price);
     else if (sort === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-    renderClinics(filtered);
+    renderClinics(filtered, q);
   }
 
-  function renderClinics(clinics) {
+  function renderClinics(clinics, q) {
     const grid = document.getElementById('clinicsGrid');
     const noRes = document.getElementById('noResults');
     const count = document.getElementById('clinicsCount');
@@ -110,6 +114,24 @@
     grid.innerHTML = clinics.map(c => {
       const doctors = getDoctorsByClinic(c.id);
       const availableSlots = getSlots().filter(s => s.clinicId === c.id && s.active && s.date >= new Date().toISOString().split('T')[0] && s.bookedCount < s.maxPatients);
+
+      let matchingDoctorsHtml = '';
+      if (q) {
+        const clinicMatches = c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q);
+        if (!clinicMatches) {
+          const matched = doctors.filter(d =>
+            d.name.toLowerCase().includes(q) || d.title.toLowerCase().includes(q)
+          );
+          if (matched.length > 0) {
+            matchingDoctorsHtml = `
+              <div class="matching-doctors">
+                <span class="matching-label">الأطباء المطابقون:</span>
+                ${matched.map(d => `<span class="matching-doctor-tag">👨‍⚕️ ${d.name}</span>`).join('')}
+              </div>`;
+          }
+        }
+      }
+
       return `
         <div class="clinic-card" onclick="window.location.href='booking.html?clinicId=${c.id}'">
           <div class="clinic-card-top">
@@ -125,6 +147,7 @@
               </div>
             </div>
           </div>
+          ${matchingDoctorsHtml}
           <div class="clinic-card-bottom">
             <div class="clinic-price">
               <strong>${c.price}</strong> <span>جنيه</span><br>

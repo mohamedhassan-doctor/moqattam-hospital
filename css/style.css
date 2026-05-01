@@ -151,6 +151,15 @@ input, select, textarea, button { font-family: 'Cairo', sans-serif; }
   padding: 14px 24px; border-top: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
 }
+.matching-doctors {
+  padding: 10px 24px; background: var(--bg); border-top: 1px dashed var(--border);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+}
+.matching-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+.matching-doctor-tag {
+  font-size: 0.75rem; background: var(--primary-light, #e8f4fd); color: var(--primary);
+  border: 1px solid var(--primary); border-radius: 20px; padding: 3px 10px; font-weight: 600;
+}
 .clinic-price { font-size: 0.9rem; color: var(--text); }
 .clinic-price strong { font-size: 1.1rem; color: var(--primary); font-weight: 800; }
 .clinic-price span { font-size: 0.78rem; color: var(--text-muted); }
