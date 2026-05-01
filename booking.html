@@ -28,6 +28,15 @@
     .date-group { margin-bottom: 20px; }
     .date-group h4 { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
     .nav-btn-row { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 12px; }
+    .payment-methods { display: flex; gap: 12px; flex-wrap: wrap; }
+    .payment-card {
+      flex: 1; min-width: 110px; border: 2px solid var(--border); border-radius: var(--radius);
+      padding: 14px 10px; text-align: center; cursor: pointer; font-size: 0.9rem; font-weight: 700;
+      transition: all 0.2s; background: white; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .payment-card .pay-icon { font-size: 1.6rem; }
+    .payment-card:hover { border-color: var(--primary); background: var(--primary-light); }
+    .payment-card.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary-dark); }
   </style>
 </head>
 <body>
@@ -133,6 +142,32 @@
           <label class="form-label">ملاحظات للطبيب</label>
           <textarea class="form-control" id="patientNotes" rows="3" placeholder="اذكر أي شكاوى أو معلومات مهمة للطبيب..."></textarea>
         </div>
+        <div class="form-group" style="margin-top:8px;">
+          <label class="form-label">طريقة الدفع <span>*</span></label>
+          <div class="payment-methods">
+            <div class="payment-card" id="pay-cash" onclick="selectPayment('cash')">
+              <span class="pay-icon">💵</span> نقدي
+            </div>
+            <div class="payment-card" id="pay-insurance" onclick="selectPayment('insurance')">
+              <span class="pay-icon">🏢</span> تأمين طبي
+            </div>
+            <div class="payment-card" id="pay-syndicate" onclick="selectPayment('syndicate')">
+              <span class="pay-icon">🏛️</span> نقابة
+            </div>
+          </div>
+        </div>
+        <div class="form-group" id="insuranceGroup" style="display:none;">
+          <label class="form-label">شركة التأمين <span>*</span></label>
+          <select class="form-control" id="insuranceSelect">
+            <option value="">-- اختر شركة التأمين --</option>
+          </select>
+        </div>
+        <div class="form-group" id="syndicateGroup" style="display:none;">
+          <label class="form-label">النقابة <span>*</span></label>
+          <select class="form-control" id="syndicateSelect">
+            <option value="">-- اختر النقابة --</option>
+          </select>
+        </div>
         <div class="nav-btn-row">
           <button class="btn btn-outline-primary" onclick="goToStep(1)">→ السابق</button>
           <button class="btn btn-primary" onclick="goToStep3()">التالي ←</button>
@@ -167,12 +202,32 @@
   let selectedClinic = null;
   let selectedDoctor = null;
   let selectedSlot = null;
+  let selectedPayment = '';
   let currentStep = 1;
 
   function init() {
     renderClinicGrid();
+    loadPaymentOptions();
     const clinicId = getParam('clinicId');
     if (clinicId) selectClinic(clinicId);
+  }
+
+  function loadPaymentOptions() {
+    document.getElementById('insuranceSelect').innerHTML =
+      '<option value="">-- اختر شركة التأمين --</option>' +
+      getInsuranceCompanies().filter(i => i.active).map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+    document.getElementById('syndicateSelect').innerHTML =
+      '<option value="">-- اختر النقابة --</option>' +
+      getSyndicates().filter(s => s.active).map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+  }
+
+  function selectPayment(type) {
+    selectedPayment = type;
+    ['cash', 'insurance', 'syndicate'].forEach(t =>
+      document.getElementById('pay-' + t).classList.toggle('selected', t === type)
+    );
+    document.getElementById('insuranceGroup').style.display = type === 'insurance' ? 'block' : 'none';
+    document.getElementById('syndicateGroup').style.display = type === 'syndicate'  ? 'block' : 'none';
   }
 
   function renderClinicGrid() {
@@ -231,9 +286,16 @@
     const name = document.getElementById('patientName').value.trim();
     const phone = document.getElementById('patientPhone').value.trim();
     const nid = document.getElementById('patientNID').value.trim();
-    if (!name) { showToast('من فضلك أدخل اسمك الكامل', 'error'); return; }
+    if (!name)  { showToast('من فضلك أدخل اسمك الكامل', 'error'); return; }
     if (!phone || phone.length < 10) { showToast('من فضلك أدخل رقم هاتف صحيح', 'error'); return; }
-    if (!nid || nid.length !== 14) { showToast('من فضلك أدخل الرقم القومي (14 رقم)', 'error'); return; }
+    if (!nid || nid.length !== 14)   { showToast('من فضلك أدخل الرقم القومي (14 رقم)', 'error'); return; }
+    if (!selectedPayment)            { showToast('من فضلك اختر طريقة الدفع', 'error'); return; }
+    if (selectedPayment === 'insurance' && !document.getElementById('insuranceSelect').value) {
+      showToast('من فضلك اختر شركة التأمين', 'error'); return;
+    }
+    if (selectedPayment === 'syndicate' && !document.getElementById('syndicateSelect').value) {
+      showToast('من فضلك اختر النقابة', 'error'); return;
+    }
     document.getElementById('step3Summary').innerHTML = `👤 ${name} — 📱 ${phone} — 🏥 ${selectedDoctor.name}`;
     renderSlots();
     goToStep(3);
@@ -286,6 +348,20 @@
 
   function confirmBooking() {
     if (!selectedSlot) { showToast('من فضلك اختر موعداً متاحاً', 'error'); return; }
+    const paymentLabels = { cash: 'نقدي', insurance: 'تأمين طبي', syndicate: 'نقابة' };
+    const paymentData = { paymentMethod: selectedPayment, paymentLabel: paymentLabels[selectedPayment] || '' };
+    if (selectedPayment === 'insurance') {
+      const insId = document.getElementById('insuranceSelect').value;
+      const ins = getInsuranceCompanies().find(i => i.id === insId);
+      paymentData.insuranceId   = insId;
+      paymentData.insuranceName = ins ? ins.name : '';
+    }
+    if (selectedPayment === 'syndicate') {
+      const synId = document.getElementById('syndicateSelect').value;
+      const syn = getSyndicates().find(s => s.id === synId);
+      paymentData.syndicateId   = synId;
+      paymentData.syndicateName = syn ? syn.name : '';
+    }
     const booking = addBooking({
       patientName: document.getElementById('patientName').value.trim(),
       phone: document.getElementById('patientPhone').value.trim(),
@@ -299,7 +375,8 @@
       slotId: selectedSlot.id,
       date: selectedSlot.date,
       time: selectedSlot.time,
-      amount: selectedClinic.price
+      amount: selectedClinic.price,
+      ...paymentData
     });
     window.location.href = 'confirmation.html?bookingId=' + booking.id;
   }
