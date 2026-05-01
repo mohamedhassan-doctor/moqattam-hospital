@@ -72,6 +72,9 @@
         <a href="#" onclick="return showSection('doctors')"    id="nav-doctors"  ><span class="nav-icon">👨‍⚕️</span> إدارة الأطباء</a>
         <a href="#" onclick="return showSection('slots')"      id="nav-slots"    ><span class="nav-icon">📅</span> إدارة المواعيد</a>
         <a href="#" onclick="return showSection('bookings')"   id="nav-bookings" ><span class="nav-icon">📋</span> الحجوزات</a>
+        <div class="sidebar-sep"></div>
+        <a href="#" onclick="return showSection('insurance')"  id="nav-insurance" ><span class="nav-icon">🏢</span> شركات التأمين</a>
+        <a href="#" onclick="return showSection('syndicates')" id="nav-syndicates"><span class="nav-icon">🏛️</span> النقابات</a>
         <div class="sidebar-sep superadmin-only"></div>
         <a href="#" onclick="return showSection('admins')"     id="nav-admins"   class="superadmin-only"><span class="nav-icon">👥</span> المستخدمون</a>
         <a href="#" onclick="return showSection('logs')"       id="nav-logs"     class="superadmin-only"><span class="nav-icon">📝</span> سجل النشاط</a>
@@ -178,7 +181,7 @@
             <div class="table-wrap">
               <table>
                 <thead>
-                  <tr><th>رقم الحجز</th><th>المريض</th><th>العيادة / الطبيب</th><th>التاريخ والوقت</th><th>سعر الكشف</th><th>حالة الحجز</th><th>إجراءات</th></tr>
+                  <tr><th>رقم الحجز</th><th>المريض</th><th>العيادة / الطبيب</th><th>التاريخ والوقت</th><th>طريقة الدفع</th><th>سعر الكشف</th><th>حالة الحجز</th><th>إجراءات</th></tr>
                 </thead>
                 <tbody id="bookingsBody"></tbody>
               </table>
@@ -186,6 +189,38 @@
           </div>
           <div class="alert alert-info" style="margin-top:16px;">
             💵 <strong>الدفع عند الاستقبال:</strong> يتم تحصيل رسوم الكشف من المرضى عند حضورهم للعيادة.
+          </div>
+        </div>
+
+        <!-- ===== INSURANCE COMPANIES ===== -->
+        <div class="section-panel" id="panel-insurance">
+          <div class="action-bar">
+            <input type="text" placeholder="🔍 ابحث عن شركة تأمين..." oninput="renderInsuranceTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:360px;">
+            <button class="btn btn-primary" onclick="openInsuranceModal()">+ إضافة شركة</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>اسم شركة التأمين</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                <tbody id="insuranceBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SYNDICATES ===== -->
+        <div class="section-panel" id="panel-syndicates">
+          <div class="action-bar">
+            <input type="text" placeholder="🔍 ابحث عن نقابة..." oninput="renderSyndicatesTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:360px;">
+            <button class="btn btn-primary" onclick="openSyndicateModal()">+ إضافة نقابة</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>اسم النقابة</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                <tbody id="syndicatesBody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -362,6 +397,36 @@
   </div>
 </div>
 
+<!-- Insurance Company Modal -->
+<div class="modal-overlay" id="insuranceModal">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header"><h3 id="insuranceModalTitle">إضافة شركة تأمين</h3><button class="modal-close" onclick="closeModal('insuranceModal')">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="insuranceId">
+      <div class="form-group"><label class="form-label">اسم شركة التأمين <span>*</span></label><input type="text" class="form-control" id="insuranceName" placeholder="مثال: شركة مصر للتأمين"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('insuranceModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveInsurance()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Syndicate Modal -->
+<div class="modal-overlay" id="syndicateModal">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header"><h3 id="syndicateModalTitle">إضافة نقابة</h3><button class="modal-close" onclick="closeModal('syndicateModal')">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="syndicateId">
+      <div class="form-group"><label class="form-label">اسم النقابة <span>*</span></label><input type="text" class="form-control" id="syndicateName" placeholder="مثال: نقابة الأطباء"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('syndicateModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveSyndicate()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
 <!-- Delete Confirm Modal -->
 <div class="modal-overlay" id="deleteModal">
   <div class="modal" style="max-width:400px;">
@@ -435,6 +500,8 @@ function initAdmin() {
   renderSlotsTable();
   renderBookingsTable();
   renderBookingFilters();
+  renderInsuranceTable();
+  renderSyndicatesTable();
   if (admin.role === 'superadmin') {
     renderAdminsTable();
     populateLogUserFilter();
@@ -448,7 +515,7 @@ function showSection(name) {
   document.getElementById('panel-' + name).classList.add('active');
   const navEl = document.getElementById('nav-' + name);
   if (navEl) navEl.classList.add('active');
-  const titles = { dashboard:'لوحة التحكم', clinics:'إدارة العيادات', doctors:'إدارة الأطباء', slots:'إدارة المواعيد', bookings:'الحجوزات', admins:'إدارة المستخدمين', logs:'سجل النشاط' };
+  const titles = { dashboard:'لوحة التحكم', clinics:'إدارة العيادات', doctors:'إدارة الأطباء', slots:'إدارة المواعيد', bookings:'الحجوزات', insurance:'شركات التأمين', syndicates:'النقابات', admins:'إدارة المستخدمين', logs:'سجل النشاط' };
   document.getElementById('pageTitle').textContent = titles[name] || name;
   if (name === 'doctors')   { populateDoctorClinicFilter(); renderDoctorsTable(); }
   if (name === 'slots')     { populateSlotFilters(); renderSlotsTable(); }
@@ -661,14 +728,22 @@ function renderBookingsTable(search='') {
     (!search || b.patientName.includes(search) || b.id.includes(search) || (b.phone||'').includes(search))
   ).reverse();
   document.getElementById('bookingsBody').innerHTML = bookings.length===0
-    ? '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد حجوزات</td></tr>'
+    ? '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد حجوزات</td></tr>'
     : bookings.map(b => {
         const st = getStatusBadge(b.status);
+        const payIcons = { cash:'💵', insurance:'🏢', syndicate:'🏛️' };
+        const payIcon = payIcons[b.paymentMethod] || '💵';
+        const payLabel = b.paymentLabel || 'نقدي';
+        const payDetail = b.insuranceName || b.syndicateName || '';
         return `<tr>
           <td><strong style="font-size:0.82rem;color:var(--primary);">${b.id}</strong></td>
           <td style="font-size:0.85rem;"><strong>${b.patientName}</strong><br><span style="color:var(--text-muted);font-size:0.75rem;">${b.phone||''}</span></td>
           <td style="font-size:0.82rem;">${b.clinicName}<br><span style="color:var(--text-muted);font-size:0.75rem;">${b.doctorName||''}</span></td>
           <td style="font-size:0.82rem;">${b.date}<br><span style="color:var(--text-muted);font-size:0.75rem;">${b.time||''}</span></td>
+          <td style="font-size:0.82rem;">
+            <span style="font-weight:700;">${payIcon} ${payLabel}</span>
+            ${payDetail ? `<br><span style="color:var(--text-muted);font-size:0.75rem;">${payDetail}</span>` : ''}
+          </td>
           <td style="font-size:0.9rem;font-weight:900;color:var(--primary);">${b.amount||0} ج</td>
           <td>
             <select class="status-select" onchange="updateBookingStatus('${b.id}',this.value)">
@@ -707,12 +782,70 @@ function quickCancel(id) {
 }
 function exportBookings() {
   const bookings = getBookings();
-  const header = 'رقم الحجز,اسم المريض,الهاتف,الرقم القومي,العيادة,الطبيب,التاريخ,الوقت,سعر الكشف,حالة الحجز\n';
-  const rows = bookings.map(b=>[b.id,b.patientName,b.phone||'',b.nationalId||'',b.clinicName,b.doctorName,b.date||'',b.time||'',b.amount||0,b.status].join(',')).join('\n');
+  const header = 'رقم الحجز,اسم المريض,الهاتف,الرقم القومي,العيادة,الطبيب,التاريخ,الوقت,طريقة الدفع,شركة التأمين/النقابة,سعر الكشف,حالة الحجز\n';
+  const rows = bookings.map(b=>[b.id,b.patientName,b.phone||'',b.nationalId||'',b.clinicName,b.doctorName,b.date||'',b.time||'',b.paymentLabel||'نقدي',(b.insuranceName||b.syndicateName||''),b.amount||0,b.status].join(',')).join('\n');
   const blob = new Blob(['﻿'+header+rows],{type:'text/csv;charset=utf-8'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='bookings_'+new Date().toISOString().split('T')[0]+'.csv'; a.click();
   addLog('booking_export','تصدير بيانات الحجوزات CSV');
   showToast('تم تصدير الملف بنجاح');
+}
+
+// ===================== INSURANCE COMPANIES =====================
+function renderInsuranceTable(search='') {
+  const list = getInsuranceCompanies().filter(x => !search || x.name.includes(search));
+  document.getElementById('insuranceBody').innerHTML = list.length === 0
+    ? '<tr><td colspan="3" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد شركات تأمين</td></tr>'
+    : list.map(x => `<tr>
+        <td><strong>${x.name}</strong></td>
+        <td><span class="badge ${x.active?'badge-success':'badge-danger'}">${x.active?'نشطة':'معطلة'}</span></td>
+        <td><div style="display:flex;gap:6px;">
+          <button class="btn btn-sm btn-outline-primary" onclick="openInsuranceModal('${x.id}')">✏️ تعديل</button>
+          <button class="btn btn-sm btn-danger" onclick="confirmDelete('insurance','${x.id}','${x.name}')">🗑️</button>
+        </div></td>
+      </tr>`).join('');
+}
+function openInsuranceModal(id=null) {
+  document.getElementById('insuranceModalTitle').textContent = id ? 'تعديل شركة التأمين' : 'إضافة شركة تأمين جديدة';
+  document.getElementById('insuranceId').value = id || '';
+  document.getElementById('insuranceName').value = id ? (getInsuranceCompanies().find(x=>x.id===id)?.name||'') : '';
+  openModal('insuranceModal');
+}
+function saveInsurance() {
+  const name = document.getElementById('insuranceName').value.trim();
+  if (!name) { showToast('اسم الشركة مطلوب', 'error'); return; }
+  const id = document.getElementById('insuranceId').value;
+  if (id) { updateInsuranceCompany(id, {name}); addLog('insurance_edit', `تعديل شركة تأمين: ${name}`); }
+  else    { addInsuranceCompany({name});         addLog('insurance_add',  `إضافة شركة تأمين: ${name}`); }
+  closeModal('insuranceModal'); renderInsuranceTable(); showToast(id ? 'تم تحديث الشركة' : 'تمت إضافة الشركة');
+}
+
+// ===================== SYNDICATES =====================
+function renderSyndicatesTable(search='') {
+  const list = getSyndicates().filter(x => !search || x.name.includes(search));
+  document.getElementById('syndicatesBody').innerHTML = list.length === 0
+    ? '<tr><td colspan="3" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد نقابات</td></tr>'
+    : list.map(x => `<tr>
+        <td><strong>${x.name}</strong></td>
+        <td><span class="badge ${x.active?'badge-success':'badge-danger'}">${x.active?'نشطة':'معطلة'}</span></td>
+        <td><div style="display:flex;gap:6px;">
+          <button class="btn btn-sm btn-outline-primary" onclick="openSyndicateModal('${x.id}')">✏️ تعديل</button>
+          <button class="btn btn-sm btn-danger" onclick="confirmDelete('syndicate','${x.id}','${x.name}')">🗑️</button>
+        </div></td>
+      </tr>`).join('');
+}
+function openSyndicateModal(id=null) {
+  document.getElementById('syndicateModalTitle').textContent = id ? 'تعديل النقابة' : 'إضافة نقابة جديدة';
+  document.getElementById('syndicateId').value = id || '';
+  document.getElementById('syndicateName').value = id ? (getSyndicates().find(x=>x.id===id)?.name||'') : '';
+  openModal('syndicateModal');
+}
+function saveSyndicate() {
+  const name = document.getElementById('syndicateName').value.trim();
+  if (!name) { showToast('اسم النقابة مطلوب', 'error'); return; }
+  const id = document.getElementById('syndicateId').value;
+  if (id) { updateSyndicate(id, {name}); addLog('syndicate_edit', `تعديل نقابة: ${name}`); }
+  else    { addSyndicate({name});        addLog('syndicate_add',  `إضافة نقابة: ${name}`); }
+  closeModal('syndicateModal'); renderSyndicatesTable(); showToast(id ? 'تم تحديث النقابة' : 'تمت إضافة النقابة');
 }
 
 // ===================== ADMIN USERS =====================
@@ -866,6 +999,8 @@ function confirmDelete(type, id, name) {
     doctor:     `هل أنت متأكد من حذف الطبيب "${name}"؟ سيتم حذف جميع مواعيده.`,
     slot:       `هل أنت متأكد من حذف "${name}"؟`,
     admin_user: `هل أنت متأكد من حذف المستخدم "${name}"؟ لا يمكن التراجع عن هذا الإجراء.`,
+    insurance:  `هل أنت متأكد من حذف شركة التأمين "${name}"؟`,
+    syndicate:  `هل أنت متأكد من حذف نقابة "${name}"؟`,
   };
   document.getElementById('deleteMsg').textContent = msgs[type]||'هل أنت متأكد من الحذف؟';
   document.getElementById('deleteConfirmBtn').onclick = doDelete;
@@ -874,10 +1009,12 @@ function confirmDelete(type, id, name) {
 function doDelete() {
   if (!pendingDelete) return;
   const {type, id, name} = pendingDelete;
-  if (type==='clinic')     { deleteClinic(id);  addLog('clinic_delete', `حذف عيادة: ${name}`);     renderClinicsTable(); }
-  if (type==='doctor')     { deleteDoctor(id);  addLog('doctor_delete', `حذف طبيب: ${name}`);      renderDoctorsTable(); }
-  if (type==='slot')       { deleteSlot(id);    addLog('slot_delete',   `حذف موعد: ${name}`);      renderSlotsTable(); }
-  if (type==='admin_user') { deleteAdmin(id);   addLog('admin_delete',  `حذف مستخدم: ${name}`);    renderAdminsTable(); }
+  if (type==='clinic')     { deleteClinic(id);           addLog('clinic_delete',    `حذف عيادة: ${name}`);          renderClinicsTable(); }
+  if (type==='doctor')     { deleteDoctor(id);           addLog('doctor_delete',    `حذف طبيب: ${name}`);           renderDoctorsTable(); }
+  if (type==='slot')       { deleteSlot(id);             addLog('slot_delete',      `حذف موعد: ${name}`);           renderSlotsTable(); }
+  if (type==='admin_user') { deleteAdmin(id);            addLog('admin_delete',     `حذف مستخدم: ${name}`);         renderAdminsTable(); }
+  if (type==='insurance')  { deleteInsuranceCompany(id); addLog('insurance_delete', `حذف شركة تأمين: ${name}`);     renderInsuranceTable(); }
+  if (type==='syndicate')  { deleteSyndicate(id);        addLog('syndicate_delete', `حذف نقابة: ${name}`);          renderSyndicatesTable(); }
   renderDashboard();
   closeModal('deleteModal');
   showToast('تم الحذف بنجاح');
