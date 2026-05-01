@@ -104,13 +104,19 @@
   }
 
   function renderDetails(b) {
+    const payIconMap  = { cash: '💵', insurance: '🏢', syndicate: '🏛️' };
+    const payIcon     = payIconMap[b.paymentMethod] || '💵';
+    const payLabel    = b.paymentLabel || 'نقدي';
+    const payDetail   = b.insuranceName || b.syndicateName || '';
+
     const coreDetails = [
-      { icon: '🏥', label: 'العيادة',       value: b.clinicName },
-      { icon: '👨‍⚕️', label: 'الطبيب',       value: b.doctorName },
-      { icon: '👤', label: 'المريض',        value: b.patientName },
-      { icon: '📱', label: 'رقم الهاتف',   value: b.phone },
-      { icon: '📆', label: 'تاريخ الموعد', value: formatDate(b.date) },
-      { icon: '⏰', label: 'وقت الموعد',   value: b.time },
+      { icon: '🏥',  label: 'العيادة',       value: b.clinicName },
+      { icon: '👨‍⚕️', label: 'الطبيب',        value: b.doctorName },
+      { icon: '👤',  label: 'المريض',         value: b.patientName },
+      { icon: '📱',  label: 'رقم الهاتف',    value: b.phone },
+      { icon: '📆',  label: 'تاريخ الموعد',  value: formatDate(b.date) },
+      { icon: '⏰',  label: 'وقت الموعد',    value: b.time },
+      { icon: payIcon, label: 'طريقة الدفع', value: payDetail ? `${payLabel} — ${payDetail}` : payLabel },
     ];
 
     const coreHTML = coreDetails.map(d => `
@@ -119,18 +125,28 @@
         <div class="confirm-detail-text"><strong>${d.label}</strong><span>${d.value}</span></div>
       </div>`).join('');
 
-    const payHTML = `
-      <div style="margin-top:16px;border-top:2px dashed var(--border);padding-top:16px;">
-        <div style="background:#fff8e1;border:2px solid #f9a825;border-radius:var(--radius-sm);padding:20px;text-align:center;">
-          <div style="font-size:2rem;margin-bottom:8px;">🏥</div>
-          <p style="font-weight:900;font-size:1.05rem;color:#e65100;margin-bottom:6px;">الدفع عند الاستقبال</p>
-          <p style="font-size:0.88rem;color:#bf360c;margin-bottom:14px;">سيتم تحصيل رسوم الكشف عند حضورك للعيادة</p>
-          <div style="background:white;border-radius:8px;padding:12px 20px;display:inline-block;border:1px solid #ffe082;">
-            <span style="font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:2px;">رسوم الكشف المستحقة</span>
-            <span style="font-size:1.5rem;font-weight:900;color:var(--primary);">${b.amount} جنيه</span>
-          </div>
-        </div>
-      </div>`;
+    const isCovered = b.paymentMethod === 'insurance' || b.paymentMethod === 'syndicate';
+
+    const payHTML = isCovered
+      ? `<div style="margin-top:16px;border-top:2px dashed var(--border);padding-top:16px;">
+           <div style="background:#e8f5e9;border:2px solid #66bb6a;border-radius:var(--radius-sm);padding:20px;text-align:center;">
+             <div style="font-size:2rem;margin-bottom:10px;">ℹ️</div>
+             <p style="font-weight:700;font-size:0.95rem;color:#2e7d32;line-height:1.8;margin:0;">
+               سيتم تحديد نسبة التحمل الخاصة بك عند الحضور بناءً على بياناتك التأمينية
+             </p>
+           </div>
+         </div>`
+      : `<div style="margin-top:16px;border-top:2px dashed var(--border);padding-top:16px;">
+           <div style="background:#fff8e1;border:2px solid #f9a825;border-radius:var(--radius-sm);padding:20px;text-align:center;">
+             <div style="font-size:2rem;margin-bottom:8px;">🏥</div>
+             <p style="font-weight:900;font-size:1.05rem;color:#e65100;margin-bottom:6px;">الدفع عند الاستقبال</p>
+             <p style="font-size:0.88rem;color:#bf360c;margin-bottom:14px;">سيتم تحصيل رسوم الكشف عند حضورك للعيادة</p>
+             <div style="background:white;border-radius:8px;padding:12px 20px;display:inline-block;border:1px solid #ffe082;">
+               <span style="font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:2px;">رسوم الكشف المستحقة</span>
+               <span style="font-size:1.5rem;font-weight:900;color:var(--primary);">${b.amount} جنيه</span>
+             </div>
+           </div>
+         </div>`;
 
     document.getElementById('confirmDetails').innerHTML = coreHTML + payHTML;
   }
