@@ -38,11 +38,16 @@
 <div class="login-page admin-login-page" id="loginPage">
   <div class="admin-login-card">
     <div class="admin-login-logo">
-      <div class="logo-icon">🏥</div>
+      <div class="logo-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      </div>
       <h2>مستشفى المقطم التخصصي</h2>
       <p>لوحة تحكم المسؤول</p>
     </div>
-    <div id="loginError" class="alert alert-danger" style="display:none;">❌ بيانات الدخول غير صحيحة أو الحساب معطل</div>
+    <div id="loginError" class="alert alert-danger" style="display:none;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      بيانات الدخول غير صحيحة أو الحساب معطل
+    </div>
     <div class="form-group">
       <label class="form-label">اسم المستخدم</label>
       <input type="text" class="form-control" id="loginUser" placeholder="أدخل اسم المستخدم" dir="ltr">
@@ -51,7 +56,10 @@
       <label class="form-label">كلمة المرور</label>
       <input type="password" class="form-control" id="loginPass" placeholder="••••••••" dir="ltr" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
-    <button class="btn btn-primary btn-block btn-lg" onclick="doLogin()" style="margin-top:8px;">🔐 دخول</button>
+    <button class="btn btn-primary btn-block btn-lg" onclick="doLogin()" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      دخول
+    </button>
     <p style="text-align:center;font-size:0.76rem;color:var(--text-muted);margin-top:14px;">المدير العام: superadmin / superadmin123</p>
   </div>
 </div>
@@ -63,24 +71,56 @@
     <!-- SIDEBAR -->
     <aside class="admin-sidebar" id="adminSidebar">
       <div class="sidebar-brand">
-        <div class="brand-icon">🏥</div>
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
         <div class="sidebar-brand-text"><h3>مستشفى المقطم</h3><span>لوحة التحكم</span></div>
       </div>
       <nav class="sidebar-nav" id="sidebarNav">
-        <a href="#" onclick="return showSection('dashboard')"  id="nav-dashboard" class="active"><span class="nav-icon">📊</span> لوحة التحكم</a>
-        <a href="#" onclick="return showSection('clinics')"    id="nav-clinics"  ><span class="nav-icon">🏥</span> إدارة العيادات</a>
-        <a href="#" onclick="return showSection('doctors')"    id="nav-doctors"  ><span class="nav-icon">👨‍⚕️</span> إدارة الأطباء</a>
-        <a href="#" onclick="return showSection('slots')"      id="nav-slots"    ><span class="nav-icon">📅</span> إدارة المواعيد</a>
-        <a href="#" onclick="return showSection('bookings')"   id="nav-bookings" ><span class="nav-icon">📋</span> الحجوزات</a>
+        <a href="#" onclick="return showSection('dashboard')"  id="nav-dashboard" class="active">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+          لوحة التحكم
+        </a>
+        <a href="#" onclick="return showSection('clinics')"    id="nav-clinics">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+          إدارة العيادات
+        </a>
+        <a href="#" onclick="return showSection('doctors')"    id="nav-doctors">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+          إدارة الأطباء
+        </a>
+        <a href="#" onclick="return showSection('slots')"      id="nav-slots">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          إدارة المواعيد
+        </a>
+        <a href="#" onclick="return showSection('bookings')"   id="nav-bookings">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></span>
+          الحجوزات
+        </a>
         <div class="sidebar-sep"></div>
-        <a href="#" onclick="return showSection('insurance')"  id="nav-insurance" ><span class="nav-icon">🏢</span> شركات التأمين</a>
-        <a href="#" onclick="return showSection('syndicates')" id="nav-syndicates"><span class="nav-icon">🏛️</span> النقابات</a>
+        <a href="#" onclick="return showSection('insurance')"  id="nav-insurance">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></svg></span>
+          شركات التأمين
+        </a>
+        <a href="#" onclick="return showSection('syndicates')" id="nav-syndicates">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          النقابات
+        </a>
         <div class="sidebar-sep superadmin-only"></div>
-        <a href="#" onclick="return showSection('admins')"     id="nav-admins"   class="superadmin-only"><span class="nav-icon">👥</span> المستخدمون</a>
-        <a href="#" onclick="return showSection('logs')"       id="nav-logs"     class="superadmin-only"><span class="nav-icon">📝</span> سجل النشاط</a>
+        <a href="#" onclick="return showSection('admins')"     id="nav-admins" class="superadmin-only">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          المستخدمون
+        </a>
+        <a href="#" onclick="return showSection('logs')"       id="nav-logs" class="superadmin-only">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
+          سجل النشاط
+        </a>
       </nav>
       <div class="sidebar-footer">
-        <button class="btn btn-danger btn-sm btn-block" onclick="doLogout()">🚪 تسجيل الخروج</button>
+        <button class="btn btn-danger btn-sm btn-block" onclick="doLogout()" style="display:flex;align-items:center;justify-content:center;gap:7px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          تسجيل الخروج
+        </button>
         <a href="index.html" style="display:block;text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.6);margin-top:10px;">← العودة للموقع</a>
       </div>
     </aside>
@@ -89,7 +129,10 @@
     <main class="admin-main">
       <div class="admin-topbar">
         <div style="display:flex;align-items:center;gap:12px;">
-          <button class="sidebar-mobile-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('open')">☰</button>
+          <button class="sidebar-mobile-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('open')" style="display:flex;align-items:center;gap:6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            القائمة
+          </button>
           <h2 id="pageTitle">لوحة التحكم</h2>
         </div>
         <div class="topbar-user-info">
@@ -106,11 +149,11 @@
           <div class="stat-cards" id="dashStats"></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" id="dashGrids">
             <div class="card">
-              <div class="card-header"><h3>📋 آخر الحجوزات</h3></div>
+              <div class="card-header"><h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> آخر الحجوزات</h3></div>
               <div class="card-body" id="recentBookings" style="padding:0;"></div>
             </div>
             <div class="card">
-              <div class="card-header"><h3>📊 توزيع حالات الحجز</h3></div>
+              <div class="card-header"><h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> توزيع حالات الحجز</h3></div>
               <div class="card-body" id="bookingStatusStats" style="padding:16px;"></div>
             </div>
           </div>
@@ -119,7 +162,7 @@
         <!-- ===== CLINICS ===== -->
         <div class="section-panel" id="panel-clinics">
           <div class="action-bar">
-            <input type="text" placeholder="🔍 ابحث عن عيادة..." oninput="renderClinicsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:320px;">
+            <input type="text" placeholder="ابحث عن عيادة..." oninput="renderClinicsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:320px;">
             <button class="btn btn-primary" onclick="openClinicModal()">+ إضافة عيادة</button>
           </div>
           <div class="card">
@@ -136,7 +179,7 @@
         <div class="section-panel" id="panel-doctors">
           <div class="action-bar">
             <div style="display:flex;gap:12px;flex-wrap:wrap;flex:1;">
-              <input type="text" placeholder="🔍 ابحث عن طبيب..." oninput="renderDoctorsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;">
+              <input type="text" placeholder="ابحث عن طبيب..." oninput="renderDoctorsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;">
               <select id="doctorClinicFilter" onchange="renderDoctorsTable()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;"><option value="">كل العيادات</option></select>
             </div>
             <button class="btn btn-primary" onclick="openDoctorModal()">+ إضافة طبيب</button>
@@ -174,8 +217,8 @@
         <div class="section-panel" id="panel-bookings">
           <div class="booking-filters" id="bookingFilters"></div>
           <div class="action-bar">
-            <input type="text" placeholder="🔍 ابحث باسم المريض أو رقم الحجز أو الهاتف..." oninput="renderBookingsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;min-width:200px;">
-            <button class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);white-space:nowrap;" onclick="exportBookings()">📥 تصدير CSV</button>
+            <input type="text" placeholder="ابحث باسم المريض أو رقم الحجز أو الهاتف..." oninput="renderBookingsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;min-width:200px;">
+            <button class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);white-space:nowrap;display:flex;align-items:center;gap:5px;" onclick="exportBookings()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> تصدير CSV</button>
           </div>
           <div class="card">
             <div class="table-wrap">
@@ -187,15 +230,16 @@
               </table>
             </div>
           </div>
-          <div class="alert alert-info" style="margin-top:16px;">
-            💵 <strong>الدفع عند الاستقبال:</strong> يتم تحصيل رسوم الكشف من المرضى عند حضورهم للعيادة.
+          <div class="alert alert-info" style="margin-top:16px;display:flex;align-items:center;gap:8px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <span><strong>الدفع عند الاستقبال:</strong> يتم تحصيل رسوم الكشف من المرضى عند حضورهم للعيادة.</span>
           </div>
         </div>
 
         <!-- ===== INSURANCE COMPANIES ===== -->
         <div class="section-panel" id="panel-insurance">
           <div class="action-bar">
-            <input type="text" placeholder="🔍 ابحث عن شركة تأمين..." oninput="renderInsuranceTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:360px;">
+            <input type="text" placeholder="ابحث عن شركة تأمين..." oninput="renderInsuranceTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:360px;">
             <button class="btn btn-primary" onclick="openInsuranceModal()">+ إضافة شركة</button>
           </div>
           <div class="card">
@@ -211,7 +255,7 @@
         <!-- ===== SYNDICATES ===== -->
         <div class="section-panel" id="panel-syndicates">
           <div class="action-bar">
-            <input type="text" placeholder="🔍 ابحث عن نقابة..." oninput="renderSyndicatesTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:360px;">
+            <input type="text" placeholder="ابحث عن نقابة..." oninput="renderSyndicatesTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:360px;">
             <button class="btn btn-primary" onclick="openSyndicateModal()">+ إضافة نقابة</button>
           </div>
           <div class="card">
@@ -227,7 +271,7 @@
         <!-- ===== ADMIN USERS (superadmin only) ===== -->
         <div class="section-panel" id="panel-admins">
           <div class="action-bar">
-            <input type="text" placeholder="🔍 ابحث باسم المستخدم أو الاسم الكامل..." oninput="renderAdminsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:360px;">
+            <input type="text" placeholder="ابحث باسم المستخدم أو الاسم الكامل..." oninput="renderAdminsTable(this.value)" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.88rem;outline:none;flex:1;max-width:360px;">
             <button class="btn btn-primary" onclick="openAdminModal()">+ إضافة مستخدم</button>
           </div>
           <div class="card">
@@ -245,10 +289,10 @@
           <div class="action-bar" style="flex-wrap:wrap;gap:10px;align-items:flex-start;">
             <div style="display:flex;gap:10px;flex-wrap:wrap;flex:1;">
               <select id="logUserFilter" onchange="renderLogsTable()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;">
-                <option value="">👤 كل المستخدمين</option>
+                <option value="">كل المستخدمين</option>
               </select>
               <select id="logActionFilter" onchange="renderLogsTable()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;">
-                <option value="">📂 كل الإجراءات</option>
+                <option value="">كل الإجراءات</option>
                 <option value="login">تسجيل الدخول</option>
                 <option value="logout">تسجيل الخروج</option>
                 <option value="clinic">العيادات</option>
@@ -261,8 +305,8 @@
               <input type="date" id="logDateTo"   onchange="renderLogsTable()" title="إلى تاريخ" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;">
             </div>
             <div style="display:flex;gap:8px;">
-              <button class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);white-space:nowrap;" onclick="exportLogs()">📥 تصدير CSV</button>
-              <button class="btn btn-sm btn-danger" onclick="confirmClearLogs()" style="white-space:nowrap;">🗑️ مسح السجل</button>
+              <button class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);white-space:nowrap;display:flex;align-items:center;gap:5px;" onclick="exportLogs()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> تصدير CSV</button>
+              <button class="btn btn-sm btn-danger" onclick="confirmClearLogs()" style="white-space:nowrap;display:flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> مسح السجل</button>
             </div>
           </div>
           <div id="logCount" style="font-size:0.82rem;color:var(--text-muted);margin-bottom:12px;"></div>
@@ -301,7 +345,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('clinicModal')">إلغاء</button>
-      <button class="btn btn-primary" onclick="saveClinic()">💾 حفظ</button>
+      <button class="btn btn-primary" onclick="saveClinic()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> حفظ</button>
     </div>
   </div>
 </div>
@@ -321,7 +365,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('doctorModal')">إلغاء</button>
-      <button class="btn btn-primary" onclick="saveDoctor()">💾 حفظ</button>
+      <button class="btn btn-primary" onclick="saveDoctor()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> حفظ</button>
     </div>
   </div>
 </div>
@@ -350,7 +394,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('slotModal')">إلغاء</button>
-      <button class="btn btn-primary" onclick="saveSlot()">💾 حفظ</button>
+      <button class="btn btn-primary" onclick="saveSlot()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> حفظ</button>
     </div>
   </div>
 </div>
@@ -392,7 +436,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('adminModal')">إلغاء</button>
-      <button class="btn btn-primary" onclick="saveAdminUser()">💾 حفظ</button>
+      <button class="btn btn-primary" onclick="saveAdminUser()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> حفظ</button>
     </div>
   </div>
 </div>
@@ -407,7 +451,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('insuranceModal')">إلغاء</button>
-      <button class="btn btn-primary" onclick="saveInsurance()">💾 حفظ</button>
+      <button class="btn btn-primary" onclick="saveInsurance()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> حفظ</button>
     </div>
   </div>
 </div>
@@ -422,7 +466,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('syndicateModal')">إلغاء</button>
-      <button class="btn btn-primary" onclick="saveSyndicate()">💾 حفظ</button>
+      <button class="btn btn-primary" onclick="saveSyndicate()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> حفظ</button>
     </div>
   </div>
 </div>
@@ -430,11 +474,11 @@
 <!-- Delete Confirm Modal -->
 <div class="modal-overlay" id="deleteModal">
   <div class="modal" style="max-width:400px;">
-    <div class="modal-header"><h3>⚠️ تأكيد الحذف</h3><button class="modal-close" onclick="closeModal('deleteModal')">×</button></div>
+    <div class="modal-header"><h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#e74c3c;vertical-align:middle;margin-left:4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> تأكيد الحذف</h3><button class="modal-close" onclick="closeModal('deleteModal')">×</button></div>
     <div class="modal-body"><p id="deleteMsg" style="font-size:0.95rem;line-height:1.6;"></p></div>
     <div class="modal-footer">
       <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('deleteModal')">إلغاء</button>
-      <button class="btn btn-danger" id="deleteConfirmBtn">🗑️ حذف</button>
+      <button class="btn btn-danger" id="deleteConfirmBtn" style="display:flex;align-items:center;gap:6px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> حذف</button>
     </div>
   </div>
 </div>
@@ -532,11 +576,15 @@ function renderDashboard() {
   const bookings = getBookings();
   const pending  = bookings.filter(b => b.status === 'pending').length;
 
+  const IC_STAT_CLINIC   = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>`;
+  const IC_STAT_DOCTOR   = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+  const IC_STAT_BOOKINGS = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`;
+  const IC_STAT_PENDING  = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
   document.getElementById('dashStats').innerHTML = [
-    { icon:'🏥', num:clinics.length,  label:'عيادة نشطة',      bg:'#e3f0ff', color:'#1565c0' },
-    { icon:'👨‍⚕️', num:doctors.length,  label:'طبيب متخصص',      bg:'#e0f2f1', color:'#00897b' },
-    { icon:'📋', num:bookings.length, label:'إجمالي الحجوزات', bg:'#fff3e0', color:'#e65100' },
-    { icon:'⏳', num:pending,         label:'قيد الانتظار',     bg:'#fff8e1', color:'#f9a825' },
+    { icon:IC_STAT_CLINIC,   num:clinics.length,  label:'عيادة نشطة',      bg:'#e3f0ff', color:'#1565c0' },
+    { icon:IC_STAT_DOCTOR,   num:doctors.length,  label:'طبيب متخصص',      bg:'#e0f2f1', color:'#00897b' },
+    { icon:IC_STAT_BOOKINGS, num:bookings.length, label:'إجمالي الحجوزات', bg:'#fff3e0', color:'#e65100' },
+    { icon:IC_STAT_PENDING,  num:pending,         label:'قيد الانتظار',     bg:'#fff8e1', color:'#f9a825' },
   ].map(s => `<div class="stat-card">
     <div class="stat-card-icon" style="background:${s.bg};color:${s.color};">${s.icon}</div>
     <div><div class="stat-card-num">${s.num}</div><div class="stat-card-label">${s.label}</div></div>
@@ -551,7 +599,7 @@ function renderDashboard() {
 
   const statusCounts = { pending:0, attended:0, cancelled:0 };
   bookings.forEach(b => { const k = b.status || 'pending'; if (statusCounts[k] !== undefined) statusCounts[k]++; });
-  const statusLabels = { pending:'⏳ قيد الانتظار', attended:'✅ حضر', cancelled:'❌ ملغي' };
+  const statusLabels = { pending:'قيد الانتظار', attended:'حضر', cancelled:'ملغي' };
   const total = bookings.length || 1;
   document.getElementById('bookingStatusStats').innerHTML = Object.entries(statusCounts).map(([k,v]) => `
     <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
@@ -572,15 +620,15 @@ function renderClinicsTable(search='') {
         const docs = getDoctors().filter(d => d.clinicId === c.id).length;
         return `<tr>
           <td><div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:36px;height:36px;border-radius:8px;background:${c.color}22;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">${c.icon||'🏥'}</div>
+            <div style="width:36px;height:36px;border-radius:8px;background:${c.color}22;color:${c.color};display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
             <div><strong style="font-size:0.9rem;">${c.name}</strong><br><span style="font-size:0.75rem;color:var(--text-muted);">${c.description||''}</span></div>
           </div></td>
           <td><strong style="color:var(--primary);">${c.price}</strong> ج</td>
           <td><span class="badge badge-primary">${docs} طبيب</span></td>
           <td><span class="badge ${c.active?'badge-success':'badge-danger'}">${c.active?'نشطة':'معطلة'}</span></td>
           <td><div style="display:flex;gap:6px;">
-            <button class="btn btn-sm btn-outline-primary" onclick="editClinic('${c.id}')">✏️ تعديل</button>
-            <button class="btn btn-sm btn-danger" onclick="confirmDelete('clinic','${c.id}','${c.name}')">🗑️</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="editClinic('${c.id}')" style="display:inline-flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> تعديل</button>
+            <button class="btn btn-sm btn-danger" onclick="confirmDelete('clinic','${c.id}','${c.name}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
           </div></td>
         </tr>`;
       }).join('');
@@ -622,12 +670,12 @@ function renderDoctorsTable(search='') {
   document.getElementById('doctorsBody').innerHTML = doctors.length===0
     ? '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);">لا يوجد أطباء</td></tr>'
     : doctors.map(d=>{const cl=getClinic(d.clinicId);return`<tr>
-      <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;">👨‍⚕️</div><strong>${d.name}</strong></div></td>
+      <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><strong>${d.name}</strong></div></td>
       <td style="font-size:0.85rem;">${d.title}</td>
       <td><span class="badge badge-primary">${cl?cl.name:'-'}</span></td>
       <td style="font-size:0.82rem;color:var(--text-muted);">${d.experience||'-'}</td>
       <td><span class="badge ${d.active?'badge-success':'badge-danger'}">${d.active?'نشط':'معطل'}</span></td>
-      <td><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-outline-primary" onclick="editDoctor('${d.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="confirmDelete('doctor','${d.id}','${d.name}')">🗑️</button></div></td>
+      <td><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-outline-primary" onclick="editDoctor('${d.id}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-sm btn-danger" onclick="confirmDelete('doctor','${d.id}','${d.name}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></td>
     </tr>`}).join('');
 }
 function openDoctorModal(id=null) {
@@ -681,7 +729,7 @@ function renderSlotsTable() {
       <td style="font-size:0.82rem;">${doc?doc.name:'-'}</td><td style="font-size:0.78rem;color:var(--text-muted);">${cl?cl.name:'-'}</td>
       <td><span class="badge ${s.bookedCount>=s.maxPatients?'badge-danger':'badge-success'}">${s.bookedCount}/${s.maxPatients}</span></td>
       <td><span class="badge ${s.active&&!past?'badge-success':'badge-secondary'}">${past?'منتهي':s.active?'متاح':'معطل'}</span></td>
-      <td><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-outline-primary" onclick="editSlot('${s.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="confirmDelete('slot','${s.id}','موعد ${s.time} - ${s.date}')">🗑️</button></div></td>
+      <td><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-outline-primary" onclick="editSlot('${s.id}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-sm btn-danger" onclick="confirmDelete('slot','${s.id}','موعد ${s.time} - ${s.date}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></td>
     </tr>`}).join('');
 }
 function openSlotModal(id=null) {
@@ -731,8 +779,11 @@ function renderBookingsTable(search='') {
     ? '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد حجوزات</td></tr>'
     : bookings.map(b => {
         const st = getStatusBadge(b.status);
-        const payIcons = { cash:'💵', insurance:'🏢', syndicate:'🏛️' };
-        const payIcon = payIcons[b.paymentMethod] || '💵';
+        const PAY_IC_CASH = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>`;
+        const PAY_IC_INS  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01"/></svg>`;
+        const PAY_IC_SYN  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
+        const payIcons = { cash:PAY_IC_CASH, insurance:PAY_IC_INS, syndicate:PAY_IC_SYN };
+        const payIcon = payIcons[b.paymentMethod] || PAY_IC_CASH;
         const payLabel = b.paymentLabel || 'نقدي';
         const payDetail = b.insuranceName || b.syndicateName || '';
         return `<tr>
@@ -757,8 +808,8 @@ function renderBookingsTable(search='') {
             </select>
           </td>
           <td><div style="display:flex;gap:4px;">
-            ${b.status!=='attended' ?`<button class="btn btn-success btn-sm" onclick="quickAttend('${b.id}')" title="حضر">✓</button>`:''}
-            ${b.status!=='cancelled'?`<button class="btn btn-danger btn-sm"  onclick="quickCancel('${b.id}')"  title="إلغاء">✕</button>`:''}
+            ${b.status!=='attended' ?`<button class="btn btn-success btn-sm" onclick="quickAttend('${b.id}')" title="حضر" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>`:''}
+            ${b.status!=='cancelled'?`<button class="btn btn-danger btn-sm"  onclick="quickCancel('${b.id}')"  title="إلغاء" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`:''}
           </div></td>
         </tr>`;
       }).join('');
@@ -802,8 +853,8 @@ function renderInsuranceTable(search='') {
         <td><strong>${x.name}</strong></td>
         <td><span class="badge ${x.active?'badge-success':'badge-danger'}">${x.active?'نشطة':'معطلة'}</span></td>
         <td><div style="display:flex;gap:6px;">
-          <button class="btn btn-sm btn-outline-primary" onclick="openInsuranceModal('${x.id}')">✏️ تعديل</button>
-          <button class="btn btn-sm btn-danger" onclick="confirmDelete('insurance','${x.id}','${x.name}')">🗑️</button>
+          <button class="btn btn-sm btn-outline-primary" onclick="openInsuranceModal('${x.id}')" style="display:inline-flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> تعديل</button>
+          <button class="btn btn-sm btn-danger" onclick="confirmDelete('insurance','${x.id}','${x.name}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
         </div></td>
       </tr>`).join('');
 }
@@ -831,8 +882,8 @@ function renderSyndicatesTable(search='') {
         <td><strong>${x.name}</strong></td>
         <td><span class="badge ${x.active?'badge-success':'badge-danger'}">${x.active?'نشطة':'معطلة'}</span></td>
         <td><div style="display:flex;gap:6px;">
-          <button class="btn btn-sm btn-outline-primary" onclick="openSyndicateModal('${x.id}')">✏️ تعديل</button>
-          <button class="btn btn-sm btn-danger" onclick="confirmDelete('syndicate','${x.id}','${x.name}')">🗑️</button>
+          <button class="btn btn-sm btn-outline-primary" onclick="openSyndicateModal('${x.id}')" style="display:inline-flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> تعديل</button>
+          <button class="btn btn-sm btn-danger" onclick="confirmDelete('syndicate','${x.id}','${x.name}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
         </div></td>
       </tr>`).join('');
 }
@@ -864,9 +915,9 @@ function renderAdminsTable(search='') {
         <td><span class="badge ${a.active?'badge-success':'badge-danger'}">${a.active?'نشط':'معطل'}</span></td>
         <td style="font-size:0.8rem;color:var(--text-muted);">${a.createdAt?new Date(a.createdAt).toLocaleDateString('ar-EG'):'—'}</td>
         <td><div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="btn btn-sm btn-outline-primary" onclick="editAdminUser('${a.id}')">✏️ تعديل</button>
-          ${a.id!==currentId?`<button class="btn btn-sm ${a.active?'btn-danger':'btn-success'}" onclick="toggleAdminActive('${a.id}',${!a.active})">${a.active?'🚫 تعطيل':'✓ تفعيل'}</button>`:'<span style="font-size:0.75rem;color:var(--text-muted);padding:4px 8px;">(حسابك)</span>'}
-          ${a.id!==currentId&&a.role!=='superadmin'?`<button class="btn btn-sm btn-danger" onclick="confirmDelete('admin_user','${a.id}','${a.fullName}')">🗑️</button>`:''}
+          <button class="btn btn-sm btn-outline-primary" onclick="editAdminUser('${a.id}')" style="display:inline-flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> تعديل</button>
+          ${a.id!==currentId?`<button class="btn btn-sm ${a.active?'btn-danger':'btn-success'}" onclick="toggleAdminActive('${a.id}',${!a.active})">${a.active?'تعطيل':'تفعيل'}</button>`:'<span style="font-size:0.75rem;color:var(--text-muted);padding:4px 8px;">(حسابك)</span>'}
+          ${a.id!==currentId&&a.role!=='superadmin'?`<button class="btn btn-sm btn-danger" onclick="confirmDelete('admin_user','${a.id}','${a.fullName}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>`:''}
         </div></td>
       </tr>`).join('');
 }
@@ -933,7 +984,7 @@ const ACTION_LABELS = {
 function populateLogUserFilter() {
   const sel = document.getElementById('logUserFilter');
   if (!sel) return;
-  sel.innerHTML = '<option value="">👤 كل المستخدمين</option>' +
+  sel.innerHTML = '<option value="">كل المستخدمين</option>' +
     getAdmins().map(a=>`<option value="${a.username}">${a.fullName} (${a.username})</option>`).join('');
 }
 

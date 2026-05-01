@@ -11,7 +11,9 @@
 <nav class="navbar">
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">
-      <div class="nav-logo">م</div>
+      <div class="nav-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </div>
       <div class="nav-brand-text">
         <h1>مستشفى المقطم التخصصي</h1>
         <span>حجز المواعيد الإلكتروني</span>
@@ -36,7 +38,10 @@
       <span>›</span>
       <span>العيادات</span>
     </div>
-    <h1>🏥 العيادات المتخصصة</h1>
+    <h1>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      العيادات المتخصصة
+    </h1>
     <p>اختر العيادة المناسبة واحجز موعدك مع أفضل الأطباء</p>
   </div>
 </div>
@@ -44,7 +49,9 @@
 <div class="search-bar-section">
   <div class="search-bar-inner">
     <div class="search-input-wrap">
-      <span class="icon">🔍</span>
+      <span class="icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </span>
       <input type="text" id="searchInput" placeholder="ابحث باسم الطبيب أو التخصص..." oninput="filterClinics()">
     </div>
     <select class="form-control" id="sortSelect" style="width:180px;" onchange="filterClinics()">
@@ -58,22 +65,28 @@
 
 <section class="section">
   <div class="section-inner">
-    <div id="clinicsCount" style="font-size:0.9rem;color:var(--text-muted);margin-bottom:20px;font-weight:600;"></div>
+    <div id="clinicsCount" style="font-size:0.88rem;color:var(--text-muted);margin-bottom:20px;font-weight:600;"></div>
     <div class="clinics-grid" id="clinicsGrid"></div>
     <div id="noResults" class="empty-state" style="display:none;">
-      <span class="emoji">😔</span>
+      <div class="empty-icon">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
       <h3>لا توجد نتائج مطابقة</h3>
       <p>لم نتمكن من إيجاد عيادة أو طبيب يطابق بحثك. حاول البحث بكلمات مختلفة مثل اسم التخصص أو اسم الطبيب.</p>
     </div>
   </div>
 </section>
 
-<footer style="background:var(--primary-dark);color:rgba(255,255,255,0.85);padding:32px 20px;text-align:center;">
-  <p style="font-size:0.85rem;">© 2025 مستشفى المقطم التخصصي. جميع الحقوق محفوظة.</p>
+<footer style="background:var(--primary-dark);color:rgba(255,255,255,0.7);padding:28px 20px;text-align:center;border-top:1px solid rgba(255,255,255,0.08);">
+  <p style="font-size:0.83rem;">© 2025 مستشفى المقطم التخصصي. جميع الحقوق محفوظة.</p>
 </footer>
 
 <script src="js/app.js"></script>
 <script>
+  const IC_CROSS  = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`;
+  const IC_USER   = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+  const IC_CAL    = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+
   let allClinics = [];
 
   function init() {
@@ -85,7 +98,7 @@
   }
 
   function filterClinics() {
-    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    const q    = document.getElementById('searchInput').value.trim().toLowerCase();
     const sort = document.getElementById('sortSelect').value;
     let filtered = allClinics.filter(c => {
       if (!q) return true;
@@ -94,14 +107,14 @@
         d.name.toLowerCase().includes(q) || d.title.toLowerCase().includes(q)
       );
     });
-    if (sort === 'price-asc') filtered.sort((a, b) => a.price - b.price);
+    if (sort === 'price-asc')  filtered.sort((a, b) => a.price - b.price);
     else if (sort === 'price-desc') filtered.sort((a, b) => b.price - a.price);
-    else if (sort === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+    else if (sort === 'name')  filtered.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
     renderClinics(filtered, q);
   }
 
   function renderClinics(clinics, q) {
-    const grid = document.getElementById('clinicsGrid');
+    const grid  = document.getElementById('clinicsGrid');
     const noRes = document.getElementById('noResults');
     const count = document.getElementById('clinicsCount');
     count.textContent = `يتم عرض ${clinics.length} عيادة`;
@@ -112,8 +125,12 @@
     }
     noRes.style.display = 'none';
     grid.innerHTML = clinics.map(c => {
-      const doctors = getDoctorsByClinic(c.id);
-      const availableSlots = getSlots().filter(s => s.clinicId === c.id && s.active && s.date >= new Date().toISOString().split('T')[0] && s.bookedCount < s.maxPatients);
+      const doctors        = getDoctorsByClinic(c.id);
+      const availableSlots = getSlots().filter(s =>
+        s.clinicId === c.id && s.active &&
+        s.date >= new Date().toISOString().split('T')[0] &&
+        s.bookedCount < s.maxPatients
+      );
 
       let matchingDoctorsHtml = '';
       if (q) {
@@ -126,7 +143,7 @@
             matchingDoctorsHtml = `
               <div class="matching-doctors">
                 <span class="matching-label">الأطباء المطابقون:</span>
-                ${matched.map(d => `<span class="matching-doctor-tag">👨‍⚕️ ${d.name}</span>`).join('')}
+                ${matched.map(d => `<span class="matching-doctor-tag">${d.name}</span>`).join('')}
               </div>`;
           }
         }
@@ -135,14 +152,14 @@
       return `
         <div class="clinic-card" onclick="window.location.href='booking.html?clinicId=${c.id}'">
           <div class="clinic-card-top">
-            <div class="clinic-icon" style="background:${c.color}20;font-size:2rem;">${c.icon}</div>
+            <div class="clinic-icon" style="background:${c.color}18;color:${c.color};">${IC_CROSS}</div>
             <div class="clinic-card-info">
               <h3>${c.name}</h3>
               <p>${c.description}</p>
-              <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
-                <span class="clinic-doctors-count">👨‍⚕️ ${doctors.length} طبيب</span>
-                <span class="clinic-doctors-count" style="color:${availableSlots.length > 0 ? 'var(--success)':'var(--danger)'}">
-                  📅 ${availableSlots.length} موعد متاح
+              <div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;">
+                <span class="clinic-doctors-count">${IC_USER} ${doctors.length} طبيب</span>
+                <span class="clinic-doctors-count" style="color:${availableSlots.length > 0 ? 'var(--success)' : 'var(--danger)'};">
+                  ${IC_CAL} ${availableSlots.length} موعد متاح
                 </span>
               </div>
             </div>

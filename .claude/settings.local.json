@@ -6,7 +6,10 @@
       "PowerShell(cmd /c \"where git 2>nul\")",
       "PowerShell(cmd /c \"dir /s /b \"\"C:\\\\Program Files\\\\Git\\\\git.exe\"\" 2>nul\"; cmd /c \"dir /s /b \"\"C:\\\\Program Files\\\\Git\\\\cmd\\\\git.exe\"\" 2>nul\")",
       "PowerShell(cmd /c \"dir \"\"C:\\\\Program Files\\\\Git\"\" /a\")",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(Get-ChildItem -Path \"D:\\\\my-projects\\\\moqattam-hospital\" -Force)",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(Format-Table -AutoSize)"
     ]
   }
 }
