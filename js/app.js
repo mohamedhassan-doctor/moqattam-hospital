@@ -26,6 +26,30 @@ const INITIAL_DOCTORS = [
   { id: 'd12', clinicId: 'c6', name: 'د. منى صلاح عبد الله',    title: 'أخصائية الباطنة',                 experience: '11 سنة خبرة',   active: true }
 ];
 
+const INITIAL_INSURANCE_COMPANIES = [
+  { id: 'ins1',  name: 'شركة مصر للتأمين',              active: true },
+  { id: 'ins2',  name: 'الشركة الأهلية للتأمين',         active: true },
+  { id: 'ins3',  name: 'شركة المهندسين للتأمين',         active: true },
+  { id: 'ins4',  name: 'شركة طيبة للتأمين',              active: true },
+  { id: 'ins5',  name: 'شركة الدلتا للتأمين',            active: true },
+  { id: 'ins6',  name: 'شركة وادي النيل للتأمين',        active: true },
+  { id: 'ins7',  name: 'شركة مصر لتأمين الحياة',         active: true },
+  { id: 'ins8',  name: 'شركة أليانز مصر للتأمين',        active: true },
+  { id: 'ins9',  name: 'شركة ميتلايف أمريكان لايف',      active: true },
+  { id: 'ins10', name: 'شركة أكسا للتأمين مصر',          active: true }
+];
+
+const INITIAL_SYNDICATES = [
+  { id: 'syn1', name: 'نقابة الأطباء',     active: true },
+  { id: 'syn2', name: 'نقابة المهندسين',  active: true },
+  { id: 'syn3', name: 'نقابة المحامين',   active: true },
+  { id: 'syn4', name: 'نقابة المعلمين',   active: true },
+  { id: 'syn5', name: 'نقابة الصحفيين',   active: true },
+  { id: 'syn6', name: 'نقابة التجاريين',  active: true },
+  { id: 'syn7', name: 'نقابة الزراعيين',  active: true },
+  { id: 'syn8', name: 'نقابة العلميين',   active: true }
+];
+
 const INITIAL_ADMINS = [
   { id: 'admin_sa', username: 'superadmin', password: 'superadmin123', fullName: 'المدير العام', role: 'superadmin', active: true, createdAt: '2025-01-01T00:00:00.000Z' }
 ];
@@ -63,7 +87,9 @@ const KEYS = {
   BOOKINGS:    'mq_bookings',
   INITIALIZED: 'mq_initialized',
   ADMINS:      'mq_admins',
-  LOGS:        'mq_logs'
+  LOGS:        'mq_logs',
+  INSURANCE:   'mq_insurance',
+  SYNDICATES:  'mq_syndicates'
 };
 
 // ---- Init ----
@@ -80,6 +106,12 @@ function initData() {
   }
   if (!localStorage.getItem(KEYS.LOGS)) {
     localStorage.setItem(KEYS.LOGS, JSON.stringify([]));
+  }
+  if (!localStorage.getItem(KEYS.INSURANCE)) {
+    localStorage.setItem(KEYS.INSURANCE, JSON.stringify(INITIAL_INSURANCE_COMPANIES));
+  }
+  if (!localStorage.getItem(KEYS.SYNDICATES)) {
+    localStorage.setItem(KEYS.SYNDICATES, JSON.stringify(INITIAL_SYNDICATES));
   }
 }
 
@@ -142,6 +174,20 @@ function saveAdmins(admins)          { setItems(KEYS.ADMINS, admins); }
 function addAdmin(admin)             { const all = getAdmins(); admin.id = 'admin_' + Date.now(); admin.active = true; admin.createdAt = new Date().toISOString(); all.push(admin); saveAdmins(all); return admin; }
 function updateAdmin(id, data)       { saveAdmins(getAdmins().map(a => a.id === id ? { ...a, ...data } : a)); }
 function deleteAdmin(id)             { saveAdmins(getAdmins().filter(a => a.id !== id)); }
+
+// ---- Insurance Companies ----
+function getInsuranceCompanies()         { return getItems(KEYS.INSURANCE); }
+function saveInsuranceCompanies(list)    { setItems(KEYS.INSURANCE, list); }
+function addInsuranceCompany(item)       { const all = getInsuranceCompanies(); item.id = 'ins' + Date.now(); item.active = true; all.push(item); saveInsuranceCompanies(all); return item; }
+function updateInsuranceCompany(id, data){ saveInsuranceCompanies(getInsuranceCompanies().map(x => x.id === id ? { ...x, ...data } : x)); }
+function deleteInsuranceCompany(id)      { saveInsuranceCompanies(getInsuranceCompanies().filter(x => x.id !== id)); }
+
+// ---- Syndicates ----
+function getSyndicates()                 { return getItems(KEYS.SYNDICATES); }
+function saveSyndicates(list)            { setItems(KEYS.SYNDICATES, list); }
+function addSyndicate(item)              { const all = getSyndicates(); item.id = 'syn' + Date.now(); item.active = true; all.push(item); saveSyndicates(all); return item; }
+function updateSyndicate(id, data)       { saveSyndicates(getSyndicates().map(x => x.id === id ? { ...x, ...data } : x)); }
+function deleteSyndicate(id)             { saveSyndicates(getSyndicates().filter(x => x.id !== id)); }
 
 // ---- Activity Logs ----
 function getLogs()          { return getItems(KEYS.LOGS); }
