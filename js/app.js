@@ -233,7 +233,7 @@ function formatDate(dateStr) {
 }
 
 function getStatusBadge(status) {
-  return { pending: { label: 'قيد الانتظار', cls: 'badge-warning' }, confirmed: { label: 'مؤكد', cls: 'badge-success' }, cancelled: { label: 'ملغي', cls: 'badge-danger' }, completed: { label: 'مكتمل', cls: 'badge-secondary' } }[status] || { label: status, cls: 'badge-secondary' };
+  return { pending: { label: 'قيد الانتظار', cls: 'badge-warning' }, attended: { label: 'حضر', cls: 'badge-success' }, cancelled: { label: 'ملغي', cls: 'badge-danger' } }[status] || { label: status, cls: 'badge-secondary' };
 }
 
 function getParam(name) { return new URLSearchParams(window.location.search).get(name); }

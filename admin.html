@@ -549,9 +549,9 @@ function renderDashboard() {
       + recent.map(b => { const st = getStatusBadge(b.status); return `<tr><td><strong>${b.id}</strong></td><td style="font-size:0.82rem;">${b.patientName}</td><td style="font-size:0.82rem;">${b.clinicName||''}</td><td><span class="badge ${st.cls}">${st.label}</span></td></tr>`; }).join('')
       + '</tbody></table>';
 
-  const statusCounts = { pending:0, confirmed:0, cancelled:0, completed:0 };
+  const statusCounts = { pending:0, attended:0, cancelled:0 };
   bookings.forEach(b => { const k = b.status || 'pending'; if (statusCounts[k] !== undefined) statusCounts[k]++; });
-  const statusLabels = { pending:'⏳ قيد الانتظار', confirmed:'✅ مؤكد', cancelled:'❌ ملغي', completed:'🏁 مكتمل' };
+  const statusLabels = { pending:'⏳ قيد الانتظار', attended:'✅ حضر', cancelled:'❌ ملغي' };
   const total = bookings.length || 1;
   document.getElementById('bookingStatusStats').innerHTML = Object.entries(statusCounts).map(([k,v]) => `
     <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
@@ -717,7 +717,7 @@ function saveSlot() {
 
 // ===================== BOOKINGS =====================
 function renderBookingFilters() {
-  const filters = [{key:'all',label:'الكل'},{key:'pending',label:'قيد الانتظار'},{key:'confirmed',label:'مؤكد'},{key:'cancelled',label:'ملغي'},{key:'completed',label:'مكتمل'}];
+  const filters = [{key:'all',label:'الكل'},{key:'pending',label:'قيد الانتظار'},{key:'attended',label:'حضر'},{key:'cancelled',label:'ملغي'}];
   document.getElementById('bookingFilters').innerHTML = filters.map(f=>`<button class="filter-chip ${bookingStatusFilter===f.key?'active':''}" onclick="setBookingFilter('${f.key}')">${f.label}</button>`).join('');
 }
 function setBookingFilter(s) { bookingStatusFilter=s; renderBookingFilters(); renderBookingsTable(); }
@@ -751,14 +751,13 @@ function renderBookingsTable(search='') {
           </td>
           <td>
             <select class="status-select" onchange="updateBookingStatus('${b.id}',this.value)">
-              <option value="pending"   ${b.status==='pending'   ?'selected':''}>قيد الانتظار</option>
-              <option value="confirmed" ${b.status==='confirmed' ?'selected':''}>مؤكد</option>
-              <option value="cancelled" ${b.status==='cancelled' ?'selected':''}>ملغي</option>
-              <option value="completed" ${b.status==='completed' ?'selected':''}>مكتمل</option>
+              <option value="pending"  ${b.status==='pending'  ?'selected':''}>قيد الانتظار</option>
+              <option value="attended" ${b.status==='attended' ?'selected':''}>حضر</option>
+              <option value="cancelled"${b.status==='cancelled'?'selected':''}>ملغي</option>
             </select>
           </td>
           <td><div style="display:flex;gap:4px;">
-            ${b.status!=='confirmed'?`<button class="btn btn-success btn-sm" onclick="quickConfirm('${b.id}')" title="تأكيد">✓</button>`:''}
+            ${b.status!=='attended' ?`<button class="btn btn-success btn-sm" onclick="quickAttend('${b.id}')" title="حضر">✓</button>`:''}
             ${b.status!=='cancelled'?`<button class="btn btn-danger btn-sm"  onclick="quickCancel('${b.id}')"  title="إلغاء">✕</button>`:''}
           </div></td>
         </tr>`;
@@ -767,16 +766,16 @@ function renderBookingsTable(search='') {
 
 function updateBookingStatus(id, value) {
   const b = getBooking(id);
-  const labels = { pending:'قيد الانتظار', confirmed:'مؤكد', cancelled:'ملغي', completed:'مكتمل' };
+  const labels = { pending:'قيد الانتظار', attended:'حضر', cancelled:'ملغي' };
   updateBooking(id, {status:value});
   addLog('booking_status', `تغيير حالة الحجز ${id} إلى "${labels[value]||value}"${b?' ('+b.patientName+')':''}`);
   renderBookingsTable(); renderDashboard(); showToast('تم تحديث حالة الحجز');
 }
-function quickConfirm(id) {
+function quickAttend(id) {
   const b = getBooking(id);
-  updateBooking(id,{status:'confirmed'});
-  addLog('booking_status', `تأكيد الحجز: ${id}${b?' ('+b.patientName+')':''}`);
-  renderBookingsTable(); renderDashboard(); showToast('تم تأكيد الحجز');
+  updateBooking(id,{status:'attended'});
+  addLog('booking_status', `تسجيل حضور: ${id}${b?' ('+b.patientName+')':''}`);
+  renderBookingsTable(); renderDashboard(); showToast('تم تسجيل الحضور');
 }
 function quickCancel(id) {
   const b = getBooking(id);
