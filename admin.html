@@ -382,15 +382,26 @@
       </div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">التاريخ <span>*</span></label><input type="date" class="form-control" id="slotDate"></div>
-        <div class="form-group"><label class="form-label">الوقت <span>*</span></label>
-          <select class="form-control" id="slotTime">
+        <div class="form-group"><label class="form-label">الحد الأقصى للمرضى</label><input type="number" class="form-control" id="slotMax" value="5" min="1" max="30"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">من <span>*</span></label>
+          <select class="form-control" id="slotTimeFrom">
+            <option>08:00 ص</option><option>09:00 ص</option><option>10:00 ص</option><option>11:00 ص</option>
+            <option>12:00 م</option><option>01:00 م</option><option>02:00 م</option><option>03:00 م</option>
+            <option>04:00 م</option><option>05:00 م</option><option>06:00 م</option><option>07:00 م</option>
+            <option>08:00 م</option><option>09:00 م</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">إلى <span>*</span></label>
+          <select class="form-control" id="slotTimeTo">
             <option>09:00 ص</option><option>10:00 ص</option><option>11:00 ص</option>
-            <option>12:00 م</option><option>01:00 م</option><option>04:00 م</option>
-            <option>05:00 م</option><option>06:00 م</option><option>07:00 م</option>
+            <option>12:00 م</option><option>01:00 م</option><option>02:00 م</option><option>03:00 م</option>
+            <option>04:00 م</option><option>05:00 م</option><option>06:00 م</option><option>07:00 م</option>
+            <option>08:00 م</option><option>09:00 م</option><option>10:00 م</option>
           </select>
         </div>
       </div>
-      <div class="form-group"><label class="form-label">الحد الأقصى للمرضى</label><input type="number" class="form-control" id="slotMax" value="5" min="1" max="30"></div>
     </div>
     <div class="modal-footer">
       <button class="btn" style="background:var(--bg);border:1px solid var(--border);" onclick="closeModal('slotModal')">إلغاء</button>
@@ -725,11 +736,11 @@ function renderSlotsTable() {
   document.getElementById('slotsBody').innerHTML = slots.length===0
     ? '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد مواعيد</td></tr>'
     : slots.map(s=>{const doc=getDoctor(s.doctorId);const cl=getClinic(s.clinicId);const past=s.date<today;return`<tr style="${past?'opacity:0.55;':''}">
-      <td style="font-size:0.85rem;">${s.date}</td><td style="font-size:0.82rem;">${s.dayName||''}</td><td><strong>${s.time}</strong></td>
+      <td style="font-size:0.85rem;">${s.date}</td><td style="font-size:0.82rem;">${s.dayName||''}</td><td style="white-space:nowrap;font-size:0.82rem;">من <strong>${s.timeFrom||s.time||''}</strong> إلى <strong>${s.timeTo||''}</strong></td>
       <td style="font-size:0.82rem;">${doc?doc.name:'-'}</td><td style="font-size:0.78rem;color:var(--text-muted);">${cl?cl.name:'-'}</td>
       <td><span class="badge ${s.bookedCount>=s.maxPatients?'badge-danger':'badge-success'}">${s.bookedCount}/${s.maxPatients}</span></td>
       <td><span class="badge ${s.active&&!past?'badge-success':'badge-secondary'}">${past?'منتهي':s.active?'متاح':'معطل'}</span></td>
-      <td><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-outline-primary" onclick="editSlot('${s.id}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-sm btn-danger" onclick="confirmDelete('slot','${s.id}','موعد ${s.time} - ${s.date}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></td>
+      <td><div style="display:flex;gap:6px;"><button class="btn btn-sm btn-outline-primary" onclick="editSlot('${s.id}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-sm btn-danger" onclick="confirmDelete('slot','${s.id}','موعد ${s.timeFrom||s.time||''} — ${s.date}')" style="display:inline-flex;align-items:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></td>
     </tr>`}).join('');
 }
 function openSlotModal(id=null) {
@@ -741,25 +752,26 @@ function openSlotModal(id=null) {
   const clinics = getClinics().filter(c=>c.active);
   document.getElementById('slotClinicId').innerHTML = clinics.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
   if(clinics.length>0) populateSlotDoctors();
-  if(id){const s=getSlot(id);if(s){document.getElementById('slotDate').value=s.date;document.getElementById('slotTime').value=s.time;document.getElementById('slotMax').value=s.maxPatients;document.getElementById('slotClinicId').value=s.clinicId;populateSlotDoctors();setTimeout(()=>{document.getElementById('slotDoctorId').value=s.doctorId;},0);}}
+  if(id){const s=getSlot(id);if(s){document.getElementById('slotDate').value=s.date;document.getElementById('slotTimeFrom').value=s.timeFrom||s.time||'';document.getElementById('slotTimeTo').value=s.timeTo||'';document.getElementById('slotMax').value=s.maxPatients;document.getElementById('slotClinicId').value=s.clinicId;populateSlotDoctors();setTimeout(()=>{document.getElementById('slotDoctorId').value=s.doctorId;},0);}}
   openModal('slotModal');
 }
 function editSlot(id){openSlotModal(id);}
 function saveSlot() {
-  const cid  = document.getElementById('slotClinicId').value;
-  const did  = document.getElementById('slotDoctorId').value;
-  const date = document.getElementById('slotDate').value;
-  const time = document.getElementById('slotTime').value;
-  const max  = parseInt(document.getElementById('slotMax').value);
+  const cid      = document.getElementById('slotClinicId').value;
+  const did      = document.getElementById('slotDoctorId').value;
+  const date     = document.getElementById('slotDate').value;
+  const timeFrom = document.getElementById('slotTimeFrom').value;
+  const timeTo   = document.getElementById('slotTimeTo').value;
+  const max      = parseInt(document.getElementById('slotMax').value);
   if(!cid||!did){ showToast('اختر العيادة والطبيب','error'); return; }
   if(!date)      { showToast('التاريخ مطلوب','error'); return; }
   const dayNames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
   const d = new Date(date+'T00:00:00');
-  const data = { clinicId:cid, doctorId:did, date, dayName:dayNames[d.getDay()], time, maxPatients:max||5 };
+  const data = { clinicId:cid, doctorId:did, date, dayName:dayNames[d.getDay()], timeFrom, timeTo, maxPatients:max||5 };
   const id  = document.getElementById('slotId').value;
   const doc = getDoctor(did);
-  if(id){ updateSlot(id,data); addLog('slot_edit',`تعديل موعد: ${date} ${time}${doc?' - '+doc.name:''}`); }
-  else  { addSlot(data);       addLog('slot_add', `إضافة موعد: ${date} ${time}${doc?' - '+doc.name:''}`); }
+  if(id){ updateSlot(id,data); addLog('slot_edit',`تعديل موعد: ${date} من ${timeFrom} إلى ${timeTo}${doc?' - '+doc.name:''}`); }
+  else  { addSlot(data);       addLog('slot_add', `إضافة موعد: ${date} من ${timeFrom} إلى ${timeTo}${doc?' - '+doc.name:''}`); }
   closeModal('slotModal'); renderSlotsTable(); showToast(id?'تم تحديث الموعد':'تمت إضافة الموعد');
 }
 

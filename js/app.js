@@ -56,8 +56,6 @@ const INITIAL_ADMINS = [
 
 function generateInitialSlots() {
   const slots = [];
-  const morningTimes = ['09:00 ص', '10:00 ص', '11:00 ص', '12:00 م'];
-  const eveningTimes = ['04:00 م', '05:00 م', '06:00 م', '07:00 م'];
   const dayNames = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
   let slotId = 1;
   const today = new Date();
@@ -66,14 +64,12 @@ function generateInitialSlots() {
       const date = new Date(today);
       date.setDate(today.getDate() + dayOffset);
       if (date.getDay() === 5) continue;
+      if ((dIdx + dayOffset) % 3 === 0) continue;
       const dateStr = date.toISOString().split('T')[0];
       const dayName = dayNames[date.getDay()];
-      const allTimes = dIdx % 2 === 0 ? morningTimes : eveningTimes;
-      allTimes.forEach((time, tIdx) => {
-        if ((dIdx + tIdx + dayOffset) % 3 !== 0) {
-          slots.push({ id: 's' + slotId++, doctorId: doctor.id, clinicId: doctor.clinicId, date: dateStr, dayName, time, maxPatients: 5, bookedCount: 0, active: true });
-        }
-      });
+      const timeFrom = dIdx % 2 === 0 ? '09:00 ص' : '04:00 م';
+      const timeTo   = dIdx % 2 === 0 ? '01:00 م' : '08:00 م';
+      slots.push({ id: 's' + slotId++, doctorId: doctor.id, clinicId: doctor.clinicId, date: dateStr, dayName, timeFrom, timeTo, maxPatients: 5, bookedCount: 0, active: true });
     }
   });
   return slots;

@@ -340,11 +340,13 @@
     container.innerHTML = Object.keys(grouped).sort().map(date => `
       <div class="date-group">
         <h4>${IC_CAL} ${formatDate(date)}</h4>
-        <div class="slots-grid">
+        <div style="display:flex;flex-direction:column;gap:10px;">
           ${grouped[date].map(s => `
-            <div class="slot-btn ${selectedSlot && selectedSlot.id === s.id ? 'selected' : ''}" onclick="selectSlot('${s.id}')">
-              ${s.time}
-              <span class="slot-date">${5 - s.bookedCount} مقعد متبقي</span>
+            <div class="slot-btn ${selectedSlot && selectedSlot.id === s.id ? 'selected' : ''}"
+                 onclick="selectSlot('${s.id}')"
+                 style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;">
+              <span style="font-size:0.97rem;font-weight:800;">من ${s.timeFrom||s.time||''} إلى ${s.timeTo||''}</span>
+              <span class="slot-date">${s.maxPatients - s.bookedCount} مقعد متبقي</span>
             </div>
           `).join('')}
         </div>
@@ -400,7 +402,7 @@
       doctorName:  selectedDoctor.name,
       slotId:      selectedSlot.id,
       date:        selectedSlot.date,
-      time:        selectedSlot.time,
+      time:        'من ' + (selectedSlot.timeFrom||selectedSlot.time||'') + ' إلى ' + (selectedSlot.timeTo||''),
       amount:      selectedClinic.price,
       ...paymentData
     });
