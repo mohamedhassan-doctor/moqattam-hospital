@@ -66,8 +66,8 @@ input, select, textarea, button { font-family: 'Cairo', sans-serif; }
   padding: 9px 20px !important; border-radius: var(--radius-sm) !important;
 }
 .nav-btn:hover { background: var(--primary-dark) !important; color: white !important; }
-.nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--text); }
-.nav-toggle span { display: block; width: 22px; height: 2px; background: currentColor; margin: 5px 0; border-radius: 2px; transition: 0.3s; }
+.nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--text); line-height: 1; }
+.nav-toggle svg { display: block; }
 
 /* ---- HERO ---- */
 .hero {
