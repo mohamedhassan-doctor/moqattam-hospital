@@ -68,6 +68,10 @@ input, select, textarea, button { font-family: 'Cairo', sans-serif; }
 .nav-btn:hover { background: var(--primary-dark) !important; color: white !important; }
 .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--text); line-height: 1; }
 .nav-toggle svg { display: block; }
+.nav-contact { display: flex; align-items: center; gap: 10px; }
+.nav-contact a { display: flex; align-items: center; gap: 5px; font-size: 0.82rem; font-weight: 700; color: var(--text); text-decoration: none; white-space: nowrap; line-height: 1; }
+.nav-contact a:hover { color: var(--primary); }
+@media (max-width: 480px) { .nav-contact .phone-text { display: none; } }
 
 /* ---- HERO ---- */
 .hero {
