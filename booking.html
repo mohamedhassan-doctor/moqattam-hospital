@@ -91,11 +91,11 @@
     </div>
     <div class="step-ind" id="si2">
       <div class="step-circle">٢</div>
-      <div class="step-label">بيانات المريض</div>
+      <div class="step-label">اختر الموعد</div>
     </div>
     <div class="step-ind" id="si3">
       <div class="step-circle">٣</div>
-      <div class="step-label">اختر الموعد</div>
+      <div class="step-label">بيانات المريض</div>
     </div>
   </div>
 
@@ -125,8 +125,28 @@
     </div>
   </div>
 
-  <!-- STEP 2: PATIENT INFO -->
+  <!-- STEP 2: TIME SLOT -->
   <div class="step-panel" id="step2">
+    <div class="card">
+      <div class="card-header">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          اختر الموعد المناسب
+        </h3>
+      </div>
+      <div class="card-body">
+        <div id="step2Summary" class="selected-summary"></div>
+        <div id="slotsContainer"></div>
+        <div class="nav-btn-row">
+          <button class="btn btn-outline-primary" onclick="goToStep(1)">→ السابق</button>
+          <button class="btn btn-primary" onclick="goToStep3()">التالي ←</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: PATIENT INFO -->
+  <div class="step-panel" id="step3">
     <div class="card">
       <div class="card-header">
         <h3>
@@ -135,7 +155,7 @@
         </h3>
       </div>
       <div class="card-body">
-        <div id="step2Summary" class="selected-summary"></div>
+        <div id="step3Summary" class="selected-summary"></div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">الاسم الكامل <span>*</span></label>
@@ -185,26 +205,6 @@
             <option value="">-- اختر النقابة --</option>
           </select>
         </div>
-        <div class="nav-btn-row">
-          <button class="btn btn-outline-primary" onclick="goToStep(1)">→ السابق</button>
-          <button class="btn btn-primary" onclick="goToStep3()">التالي ←</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 3: TIME SLOT -->
-  <div class="step-panel" id="step3">
-    <div class="card">
-      <div class="card-header">
-        <h3>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          اختر الموعد المناسب
-        </h3>
-      </div>
-      <div class="card-body">
-        <div id="step3Summary" class="selected-summary"></div>
-        <div id="slotsContainer"></div>
         <div class="nav-btn-row">
           <button class="btn btn-outline-primary" onclick="goToStep(2)">→ السابق</button>
           <button class="btn btn-primary btn-lg" onclick="confirmBooking()">تأكيد الحجز ✓</button>
@@ -314,22 +314,14 @@
     if (!selectedDoctor) { showToast('من فضلك اختر الطبيب', 'error'); return; }
     document.getElementById('step2Summary').innerHTML =
       `${IC_CHECK} ${selectedClinic.name} — ${selectedDoctor.name} — ${selectedClinic.price} جنيه`;
+    renderSlots();
     goToStep(2);
   }
 
   function goToStep3() {
-    const name  = document.getElementById('patientName').value.trim();
-    const phone = document.getElementById('patientPhone').value.trim();
-    if (!name)                       { showToast('من فضلك أدخل اسمك الكامل', 'error'); return; }
-    if (!phone || phone.length < 10) { showToast('من فضلك أدخل رقم هاتف صحيح', 'error'); return; }
-    if (!selectedPayment)                 { showToast('من فضلك اختر طريقة الدفع', 'error'); return; }
-    if (selectedPayment === 'insurance' && !document.getElementById('insuranceSelect').value)
-      { showToast('من فضلك اختر شركة التأمين', 'error'); return; }
-    if (selectedPayment === 'syndicate'  && !document.getElementById('syndicateSelect').value)
-      { showToast('من فضلك اختر النقابة', 'error'); return; }
+    if (!selectedSlot) { showToast('من فضلك اختر موعداً متاحاً', 'error'); return; }
     document.getElementById('step3Summary').innerHTML =
-      `${IC_CHECK} ${name} — ${phone} — ${selectedDoctor.name}`;
-    renderSlots();
+      `${IC_CHECK} ${selectedClinic.name} — ${selectedDoctor.name} — ${formatDate(selectedSlot.date)} ${selectedSlot.time}`;
     goToStep(3);
   }
 
@@ -375,7 +367,15 @@
   }
 
   function confirmBooking() {
-    if (!selectedSlot) { showToast('من فضلك اختر موعداً متاحاً', 'error'); return; }
+    const name  = document.getElementById('patientName').value.trim();
+    const phone = document.getElementById('patientPhone').value.trim();
+    if (!name)                       { showToast('من فضلك أدخل اسمك الكامل', 'error'); return; }
+    if (!phone || phone.length < 10) { showToast('من فضلك أدخل رقم هاتف صحيح', 'error'); return; }
+    if (!selectedPayment)            { showToast('من فضلك اختر طريقة الدفع', 'error'); return; }
+    if (selectedPayment === 'insurance' && !document.getElementById('insuranceSelect').value)
+      { showToast('من فضلك اختر شركة التأمين', 'error'); return; }
+    if (selectedPayment === 'syndicate'  && !document.getElementById('syndicateSelect').value)
+      { showToast('من فضلك اختر النقابة', 'error'); return; }
     const paymentLabels = { cash: 'نقدي', insurance: 'تأمين طبي', syndicate: 'نقابة' };
     const paymentData   = { paymentMethod: selectedPayment, paymentLabel: paymentLabels[selectedPayment] || '' };
     if (selectedPayment === 'insurance') {
