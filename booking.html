@@ -326,29 +326,36 @@
   }
 
   function renderSlots() {
-    const slots     = getAvailableSlots(selectedDoctor.id);
+    const today = new Date().toISOString().split('T')[0];
+    const allSlots = getSlots().filter(s => s.doctorId === selectedDoctor.id && s.active && s.date >= today);
     const container = document.getElementById('slotsContainer');
-    if (slots.length === 0) {
+    if (allSlots.length === 0) {
       container.innerHTML = `<div class="empty-state">
         <div class="empty-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <h3>لا توجد مواعيد متاحة</h3><p>لا توجد مواعيد متاحة لهذا الطبيب في الوقت الحالي.</p>
       </div>`;
       return;
     }
-    // One slot per day: first available slot for each date
+    // Group all future slots by date
     const byDate = {};
-    slots.forEach(s => { if (!byDate[s.date]) byDate[s.date] = s; });
+    allSlots.forEach(s => { if (!byDate[s.date]) byDate[s.date] = []; byDate[s.date].push(s); });
     container.innerHTML = Object.keys(byDate).sort().map(date => {
-      const s = byDate[date];
-      const displayTo = s.timeTo || calcTimeTo(s.timeFrom || s.time || '');
+      const first = byDate[date].find(s => s.bookedCount < s.maxPatients);
+      if (!first) {
+        return `
+          <div class="date-group">
+            <h4>${IC_CAL} ${formatDate(date)}</h4>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin:4px 0 0;">لا تتوفر مواعيد متاحة في هذا اليوم</p>
+          </div>`;
+      }
+      const displayTo = first.timeTo || calcTimeTo(first.timeFrom || first.time || '');
       return `
         <div class="date-group">
           <h4>${IC_CAL} ${formatDate(date)}</h4>
-          <div class="slot-btn ${selectedSlot && selectedSlot.id === s.id ? 'selected' : ''}"
-               onclick="selectSlot('${s.id}')"
-               style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;">
-            <span style="font-size:0.97rem;font-weight:800;">من ${s.timeFrom||s.time||''} إلى ${displayTo}</span>
-            <span class="slot-date">${s.maxPatients - s.bookedCount} مقعد متبقي</span>
+          <div class="slot-btn ${selectedSlot && selectedSlot.id === first.id ? 'selected' : ''}"
+               onclick="selectSlot('${first.id}')"
+               style="display:flex;align-items:center;justify-content:center;padding:14px 20px;">
+            <span style="font-size:0.97rem;font-weight:800;">من ${first.timeFrom||first.time||''} إلى ${displayTo}</span>
           </div>
         </div>
       `;
