@@ -335,26 +335,40 @@
       </div>`;
       return;
     }
-    const grouped = {};
-    slots.forEach(s => { if (!grouped[s.date]) grouped[s.date] = []; grouped[s.date].push(s); });
-    container.innerHTML = Object.keys(grouped).sort().map(date => `
-      <div class="date-group">
-        <h4>${IC_CAL} ${formatDate(date)}</h4>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          ${grouped[date].map(s => `
-            <div class="slot-btn ${selectedSlot && selectedSlot.id === s.id ? 'selected' : ''}"
-                 onclick="selectSlot('${s.id}')"
-                 style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;">
-              <span style="font-size:0.97rem;font-weight:800;">من ${s.timeFrom||s.time||''} إلى ${s.timeTo||''}</span>
-              <span class="slot-date">${s.maxPatients - s.bookedCount} مقعد متبقي</span>
-            </div>
-          `).join('')}
+    // One slot per day: first available slot for each date
+    const byDate = {};
+    slots.forEach(s => { if (!byDate[s.date]) byDate[s.date] = s; });
+    container.innerHTML = Object.keys(byDate).sort().map(date => {
+      const s = byDate[date];
+      const displayTo = s.timeTo || calcTimeTo(s.timeFrom || s.time || '');
+      return `
+        <div class="date-group">
+          <h4>${IC_CAL} ${formatDate(date)}</h4>
+          <div class="slot-btn ${selectedSlot && selectedSlot.id === s.id ? 'selected' : ''}"
+               onclick="selectSlot('${s.id}')"
+               style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;">
+            <span style="font-size:0.97rem;font-weight:800;">من ${s.timeFrom||s.time||''} إلى ${displayTo}</span>
+            <span class="slot-date">${s.maxPatients - s.bookedCount} مقعد متبقي</span>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   function selectSlot(id) { selectedSlot = getSlot(id); renderSlots(); }
+
+  function calcTimeTo(timeFrom) {
+    const m = timeFrom.match(/(\d+):(\d+)\s*(ص|م)/);
+    if (!m) return '';
+    let h = parseInt(m[1]);
+    const min = m[2], period = m[3];
+    if (period === 'م' && h !== 12) h += 12;
+    else if (period === 'ص' && h === 12) h = 0;
+    h = (h + 2) % 24;
+    const p = h < 12 ? 'ص' : 'م';
+    if (h === 0) h = 12; else if (h > 12) h -= 12;
+    return `${String(h).padStart(2, '0')}:${min} ${p}`;
+  }
 
   function goToStep(n) {
     document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
