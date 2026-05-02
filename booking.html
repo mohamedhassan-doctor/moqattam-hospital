@@ -146,19 +146,9 @@
             <input type="tel" class="form-control" id="patientPhone" placeholder="01XXXXXXXXX" maxlength="11">
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">الرقم القومي <span>*</span></label>
-            <input type="text" class="form-control" id="patientNID" placeholder="14 رقم" maxlength="14">
-          </div>
-          <div class="form-group">
-            <label class="form-label">العمر</label>
-            <input type="number" class="form-control" id="patientAge" placeholder="العمر" min="1" max="120">
-          </div>
-        </div>
         <div class="form-group">
-          <label class="form-label">ملاحظات للطبيب</label>
-          <textarea class="form-control" id="patientNotes" rows="3" placeholder="اذكر أي شكاوى أو معلومات مهمة للطبيب..."></textarea>
+          <label class="form-label">البريد الإلكتروني (اختياري)</label>
+          <input type="email" class="form-control" id="patientEmail" placeholder="example@email.com">
         </div>
         <div class="form-group" style="margin-top:8px;">
           <label class="form-label">طريقة الدفع <span>*</span></label>
@@ -330,10 +320,8 @@
   function goToStep3() {
     const name  = document.getElementById('patientName').value.trim();
     const phone = document.getElementById('patientPhone').value.trim();
-    const nid   = document.getElementById('patientNID').value.trim();
-    if (!name)                            { showToast('من فضلك أدخل اسمك الكامل', 'error'); return; }
-    if (!phone || phone.length < 10)      { showToast('من فضلك أدخل رقم هاتف صحيح', 'error'); return; }
-    if (!nid || nid.length !== 14)        { showToast('من فضلك أدخل الرقم القومي (14 رقم)', 'error'); return; }
+    if (!name)                       { showToast('من فضلك أدخل اسمك الكامل', 'error'); return; }
+    if (!phone || phone.length < 10) { showToast('من فضلك أدخل رقم هاتف صحيح', 'error'); return; }
     if (!selectedPayment)                 { showToast('من فضلك اختر طريقة الدفع', 'error'); return; }
     if (selectedPayment === 'insurance' && !document.getElementById('insuranceSelect').value)
       { showToast('من فضلك اختر شركة التأمين', 'error'); return; }
@@ -405,9 +393,7 @@
     const booking = addBooking({
       patientName: document.getElementById('patientName').value.trim(),
       phone:       document.getElementById('patientPhone').value.trim(),
-      nationalId:  document.getElementById('patientNID').value.trim(),
-      age:         document.getElementById('patientAge').value.trim(),
-      notes:       document.getElementById('patientNotes').value.trim(),
+      email:       document.getElementById('patientEmail').value.trim(),
       clinicId:    selectedClinic.id,
       clinicName:  selectedClinic.name,
       doctorId:    selectedDoctor.id,
