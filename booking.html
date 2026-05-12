@@ -445,6 +445,23 @@
       amount:      selectedClinic.price,
       ...paymentData
     });
+    fetch('https://script.google.com/macros/s/AKfycbyS73FkxFgTIIGGNvbofhN1NJpI0QJFqbwNHSjQLfEu_g2gx_-KBjZN34UCg6UgAcra/exec', {
+      method: 'POST',
+      keepalive: true,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        bookingId:           booking.id,
+        patientName:         booking.patientName,
+        phone:               booking.phone,
+        email:               booking.email,
+        clinic:              booking.clinicName,
+        doctor:              booking.doctorName,
+        date:                booking.date,
+        time:                booking.time,
+        paymentMethod:       booking.paymentLabel,
+        insuranceOrSyndicate: booking.insuranceName || booking.syndicateName || ''
+      })
+    }).catch(() => {});
     window.location.href = 'confirmation.html?bookingId=' + booking.id;
   }
 
