@@ -141,6 +141,18 @@
     document.getElementById('bookingNumDisplay').textContent = booking.id;
     renderDetails(booking);
     launchConfetti();
+    new Image().src = 'https://script.google.com/macros/s/AKfycbyS73FkxFgTIIGGNvbofhN1NJpI0QJFqbwNHSjQLfEu_g2gx_-KBjZN34UCg6UgAcra/exec?' + new URLSearchParams({
+      bookingId:            booking.id,
+      patientName:          booking.patientName,
+      phone:                booking.phone,
+      email:                booking.email || '',
+      clinic:               booking.clinicName,
+      doctor:               booking.doctorName,
+      date:                 booking.date,
+      time:                 booking.time,
+      paymentMethod:        booking.paymentLabel,
+      insuranceOrSyndicate: booking.insuranceName || booking.syndicateName || ''
+    }).toString();
   }
 
   function renderDetails(b) {
