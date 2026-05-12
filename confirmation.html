@@ -133,9 +133,11 @@
   };
 
   function init() {
+    console.log('Confirmation page loaded');
     const id = getParam('bookingId');
     if (!id) { document.getElementById('errorState').style.display = 'block'; return; }
     const booking = getBooking(id);
+    console.log('Booking data:', booking);
     if (!booking) { document.getElementById('errorState').style.display = 'block'; return; }
     document.getElementById('confirmContent').style.display = 'block';
     document.getElementById('bookingNumDisplay').textContent = booking.id;
