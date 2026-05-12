@@ -141,6 +141,7 @@
     document.getElementById('bookingNumDisplay').textContent = booking.id;
     renderDetails(booking);
     launchConfetti();
+    console.log('Booking object from localStorage:', booking);
     new Image().src = 'https://script.google.com/macros/s/AKfycbyS73FkxFgTIIGGNvbofhN1NJpI0QJFqbwNHSjQLfEu_g2gx_-KBjZN34UCg6UgAcra/exec?' + new URLSearchParams({
       bookingId:            booking.id,
       patientName:          booking.patientName,
