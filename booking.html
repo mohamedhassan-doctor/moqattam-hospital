@@ -445,7 +445,8 @@
       amount:      selectedClinic.price,
       ...paymentData
     });
-    new Image().src = 'https://script.google.com/macros/s/AKfycbyS73FkxFgTIIGGNvbofhN1NJpI0QJFqbwNHSjQLfEu_g2gx_-KBjZN34UCg6UgAcra/exec?' + new URLSearchParams({
+    var scriptURL = 'https://script.google.com/macros/s/AKfycbyS73FkxFgTIIGGNvbofhN1NJpI0QJFqbwNHSjQLfEu_g2gx_-KBjZN34UCg6UgAcra/exec';
+    var data = {
       bookingId:            booking.id,
       patientName:          booking.patientName,
       phone:                booking.phone,
@@ -456,7 +457,8 @@
       time:                 booking.time,
       paymentMethod:        booking.paymentLabel,
       insuranceOrSyndicate: booking.insuranceName || booking.syndicateName || ''
-    }).toString();
+    };
+    new Image().src = scriptURL + '?bookingId=' + data.bookingId + '&patientName=' + encodeURIComponent(data.patientName) + '&phone=' + data.phone + '&email=' + encodeURIComponent(data.email || '') + '&clinic=' + encodeURIComponent(data.clinic) + '&doctor=' + encodeURIComponent(data.doctor) + '&date=' + data.date + '&time=' + encodeURIComponent(data.time) + '&paymentMethod=' + encodeURIComponent(data.paymentMethod) + '&insuranceOrSyndicate=' + encodeURIComponent(data.insuranceOrSyndicate || '');
     window.location.href = 'confirmation.html?bookingId=' + booking.id;
   }
 
