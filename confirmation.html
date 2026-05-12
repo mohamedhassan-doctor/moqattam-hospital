@@ -146,18 +146,18 @@
     document.getElementById('bookingNumDisplay').textContent = booking.id;
     renderDetails(booking);
     launchConfetti();
-    console.log('Booking object from localStorage:', booking);
+    const p = new URLSearchParams(window.location.search);
     new Image().src = 'https://script.google.com/macros/s/AKfycbyS73FkxFgTIIGGNvbofhN1NJpI0QJFqbwNHSjQLfEu_g2gx_-KBjZN34UCg6UgAcra/exec?' + new URLSearchParams({
-      bookingId:            booking.id,
-      patientName:          booking.patientName,
-      phone:                booking.phone,
-      email:                booking.email || '',
-      clinic:               booking.clinicName,
-      doctor:               booking.doctorName,
-      date:                 booking.date,
-      time:                 booking.time,
-      paymentMethod:        booking.paymentLabel,
-      insuranceOrSyndicate: booking.insuranceName || booking.syndicateName || ''
+      bookingId:            p.get('bookingId')            || '',
+      patientName:          p.get('patientName')          || '',
+      phone:                p.get('phone')                || '',
+      email:                p.get('email')                || '',
+      clinic:               p.get('clinic')               || '',
+      doctor:               p.get('doctor')               || '',
+      date:                 p.get('date')                 || '',
+      time:                 p.get('time')                 || '',
+      paymentMethod:        p.get('paymentMethod')        || '',
+      insuranceOrSyndicate: p.get('insuranceOrSyndicate') || ''
     }).toString();
   }
 

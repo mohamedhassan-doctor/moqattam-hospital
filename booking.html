@@ -445,7 +445,18 @@
       amount:      selectedClinic.price,
       ...paymentData
     });
-    window.location.href = 'confirmation.html?bookingId=' + booking.id;
+    window.location.href = 'confirmation.html?' + new URLSearchParams({
+      bookingId:            booking.id,
+      patientName:          booking.patientName,
+      phone:                booking.phone,
+      email:                booking.email || '',
+      clinic:               booking.clinicName,
+      doctor:               booking.doctorName,
+      date:                 booking.date,
+      time:                 booking.time,
+      paymentMethod:        booking.paymentLabel,
+      insuranceOrSyndicate: booking.insuranceName || booking.syndicateName || ''
+    }).toString();
   }
 
   init();
